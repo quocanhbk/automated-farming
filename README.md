@@ -10,3 +10,7 @@ After pulling code from git, please run `npm install`
     cd client
     npm start
 ```
+### To run back-end
+```
+    npm run dev
+```

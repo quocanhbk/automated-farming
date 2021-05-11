@@ -22,7 +22,7 @@ const Dashboard = () => {
         <Container>
             <Header/>
             <Body>
-                <PowerTag status="offf"/>
+                <PowerTag status="on"/>
                 <HumidChart/>
                 <ButtonGroup/>
             </Body>
