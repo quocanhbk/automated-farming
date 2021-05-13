@@ -31,8 +31,7 @@ app.post('/pub', (req, res) => {
     
     if (!feed) {
         res.send("Invalid topic")
-    }
-    else if (message && feed) {
+    } else if (message && feed) {
         client.publish(feed.link, message)
         res.json({
             status: "Success",
@@ -40,8 +39,7 @@ app.post('/pub', (req, res) => {
             feed: feed.link,
             message: message
         })
-    }
-    else {
+    } else {
         res.send("Body must contain topic and message")
     }
 })

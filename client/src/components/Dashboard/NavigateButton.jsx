@@ -11,7 +11,6 @@ const Container = styled.button`
     display: flex;
     justify-content: center;
     align-items: stretch;
-    padding: 0.5rem;
     
     &:before {
         content: "";
@@ -36,7 +35,7 @@ const NavigateButton = ({icon, path, text}) => {
     return (
         <Container onClick={() => navigate(path)}>
             <Content>
-                <Icon ico={icon}/>
+                    <Icon ico={icon}/>
                 <p>{text}</p>
             </Content>
         </Container>

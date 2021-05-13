@@ -18,7 +18,7 @@ const Container = styled.div`
 const Header = () => {
     return (
         <Container>
-            <Icon ico={'burger'}/>
+                <Icon ico={'burger'}/>
             <h3>Hexagon Farming System</h3>
         </Container>
     )

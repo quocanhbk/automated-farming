@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import Header from "../Header"
-
+import Toggle from "../Toggle"
+import {Switch} from '@material-ui/core'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -12,6 +13,10 @@ const Body = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
+    & .MuiSwitch-colorSecondary.Mui-checked {
+        color: ${props => props.theme.color.fill.primary};
+    }
 `
 
 const Power = () => {
@@ -19,7 +24,11 @@ const Power = () => {
         <Container>
             <Header text={'Bật/tắt hệ thống'}/>
             <Body>
-                Bật/tắt hệ thống
+                <div>
+                    <Toggle />
+                    <Switch size="medium"/>
+                </div>
+                
             </Body>
         </Container>
     )

@@ -7,6 +7,7 @@ import Mode from './Mode'
 import Power from './Power'
 import Watering from './Watering'
 import Settingg from './Settingg'
+import Login from "./Login"
 
 const Container = styled.div`
     width: 24rem;
@@ -30,6 +31,7 @@ const MainPage = () => {
                 <Power path="/power" />
                 <Watering path="/manual-watering" />
                 <Settingg path="/setting" />
+                <Login path="/login" />
             </Router>
         </Container>
     )

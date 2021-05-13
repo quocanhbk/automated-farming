@@ -52,7 +52,7 @@ const theme = {
     name: 'Dark Theme',
     color: {
       text: {
-        primary: '#E8DEC8', // Antique Gold 300
+        primary: '#F9F9F9', // Antique Gold 300
         secondary: '#9E9FA1', // Obsidian 500
         link: '#0F90A8', // Emerald 700
         visited: '#6A126A', // Amethyst 500
@@ -63,8 +63,8 @@ const theme = {
         info: '#76D7EA',
       },
       fill: {
-        primary: '#E8DEC8', // Antique Gold 300
-        secondary: '#A59C87', // Antique Gold 500
+        primary: '#56B1EE', // Antique Gold 300
+        secondary: '#F3DB6F', // Antique Gold 500
         disabled: '#C3C3C3',
         success: '#56C26A', // Green 400
         warning: '#FFD54F', // Yellow 300
