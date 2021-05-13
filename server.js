@@ -2,6 +2,7 @@ const express = require('express')
 const mqtt = require('mqtt')
 const feedList = require('./feedList')
 require('dotenv').config()
+conn = require('dbadd.js')
 
 const app = express()
 app.use(express.json())
