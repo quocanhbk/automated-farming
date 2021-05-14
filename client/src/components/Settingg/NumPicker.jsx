@@ -1,6 +1,6 @@
-// eslint-disable-next-line
-import styled from "styled-components"
 
+import styled from "styled-components"
+import React from 'react'
 const Container = styled.div`
     
     display: flex;
@@ -31,18 +31,37 @@ const Container = styled.div`
     
     
 `
+class NumPicker extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { value: 150 };
+        this.handleIncrease = this.handleIncrease.bind(this);
+        this.handleDecrease = this.handleDecrease.bind(this);        
+        this.handleChange = this.handleChange.bind(this);
+    }
 
-
-const NumPicker = ({ num }) => {
-
-    return (
-        <Container>
-            <button>-</button>
-            <input type='text' value={num} disabled/>
-            <button>+</button>
-        </Container>
-
-    )
+    handleChange(event) {
+        this.setState({ value: parseInt(event.target.value) });
+    }
+    handleIncrease(event) {
+        this.setState({ value: this.state.value + 1 });
+    }
+    handleDecrease(event) {
+        this.setState({ value: this.state.value - 1 });
+    }
+    
+    render() {
+        return (
+                
+            <Container >
+                <button onClick={this.handleDecrease} >-</button>
+                <input type='text' value={this.state.value} onChange={this.handleChange} />
+                <button onClick={this.handleIncrease}>+</button>
+            </Container>
+        )
+    }
 }
+
+
 
 export default NumPicker

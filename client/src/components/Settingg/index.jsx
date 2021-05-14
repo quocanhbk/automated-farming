@@ -93,7 +93,7 @@ const Settingg = () => {
                             <label>Công suất máy bơm</label>
                         </LabelWrapper>
                         <ElementWrapper>
-                            <NumPicker num='150' />
+                            <NumPicker value='150' />
                         </ElementWrapper>
                     </Wrapper>
                 </MainContext>
