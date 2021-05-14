@@ -19,7 +19,7 @@ const Body = styled.div`
     gap: 1rem;
     
 `
-const MainContext = styled.div`
+const MainContent = styled.div`
     display: flex;
     padding:0.7rem;
     width: 100%;
@@ -87,7 +87,7 @@ const Humid = () => {
         <Container>
             <Header text={'Cập nhật ngưỡng'} />
             <Body>
-                <MainContext>
+                <MainContent>
                     <Wrapper>
                         <LabelWrapper>
                             <label>Ngưỡng trên</label>
@@ -104,7 +104,7 @@ const Humid = () => {
                             <NumPicker value='150' />
                         </ElementWrapper>
                     </Wrapper>
-                </MainContext>
+                </MainContent>
                 <ButtonWrapper>
                     <Button >   Lưu </Button>
                     <Button >   Hủy </Button>

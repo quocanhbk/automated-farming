@@ -19,7 +19,7 @@ const Body = styled.div`
     gap: 1rem;
     
 `
-const MainContext = styled.div`
+const MainContent = styled.div`
     display: flex;
     padding:0.7rem;
     width: 100%;
@@ -87,7 +87,7 @@ const Settingg = () => {
         <Container>
             <Header text={'Điều chỉnh công suất'}/>
             <Body>
-                <MainContext>
+                <MainContent>
                     <Wrapper>
                         <LabelWrapper>
                             <label>Công suất máy bơm</label>
@@ -96,7 +96,7 @@ const Settingg = () => {
                             <NumPicker value='150' />
                         </ElementWrapper>
                     </Wrapper>
-                </MainContext>
+                </MainContent>
                 <ButtonWrapper>
                     <Button >   Lưu   </Button>
                     <Button >   Hủy </Button>
