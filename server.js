@@ -25,6 +25,34 @@ client.on('message', (topic, message) => {
     console.log("- Receive a message from", topic, ": ", message.toString())
 })
 
+app.post('/humid', (req, res) => {
+    let top = req.body.top
+    let bottom = req.body.bottom;
+    
+    if (top && bottom) {
+        if (top > 125 ) {
+            res.send("Too high");
+        } else if(bottom < 50) {
+            res.send("Too high");
+        }
+
+        var message = {
+            "top": top,
+            "bottom": bottom
+        };
+        var humid = feedList[3]
+
+        client.publish(humid.link, message)
+        res.json({
+            status: "Success",
+            topic: humid.name,
+            feed: humid.link,
+            message: message
+        })
+    } else {
+        res.send("Must have both top and bottom value")
+    }
+})
 
 app.post('/pub', (req, res) => {
     let message = req.body.message
