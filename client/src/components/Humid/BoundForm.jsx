@@ -84,27 +84,40 @@ const ButtonWrapper = styled.div`
     align-items:center;
     justify-content: space-between;
 `
-const NumPicker = (props) => {
-    const [value, setValue] = useState(parseInt(props.value));
-    
+const BoundForm = (props) => {
+    const [upper, setUpper] = useState(parseInt(props.lower));
+    const [lower, setLower] = useState(parseInt(props.upper));
+    const reset = () => {
+        setUpper(parseInt(props.upper));
+        setLower(parseInt(props.lower));
+    }
     return (
-
+        
         <Container >
             <MainContent>
                 <LabelWrapper>
-                    <label>Công suất máy bơm</label>
+                    <label>Ngưỡng trên</label>
                 </LabelWrapper>
                 <ElementWrapper>
-                    <button onClick={() => setValue(value - 1)} disabled={(value <= 0) ? true : false}> - </button>
-                    <input type='text' value={parseInt(value)} onChange={(e) => setValue(e.target.value)} />
-                    <button onClick={() => setValue(value + 1)} disabled={(value>=100)? true : false}> + </button>
+                    <button onClick={() => setUpper(upper - 1)} disabled={(upper <= 0) ? true : false}> - </button>
+                        <input type='text' className='upperBound' value={parseInt(upper)} onChange={(e) => setUpper(e.target.value)} />
+                    <button onClick={() => setUpper(upper + 1)} disabled={(upper >= 100) ? true : false}> + </button>
+                </ElementWrapper>            
+                <LabelWrapper>
+                    <label>Ngưỡng dưới</label>
+                </LabelWrapper>
+                <ElementWrapper>
+                    <button onClick={() => setLower(lower - 1)} disabled={(lower <= 0) ? true : false}> - </button>
+                        <input type='text' className='lowerBound' value={parseInt(lower)} onChange={(e) => setLower(e.target.value)} />
+                    <button onClick={() => setLower(lower + 1)} disabled={(lower >= 100) ? true : false}> + </button>
                 </ElementWrapper>
             </MainContent>
             <ButtonWrapper>
                 <Button type='submit'>   Lưu   </Button>
-                <Button onClick={() => setValue(parseInt(props.value))}>   Hủy </Button>
+                    <Button onClick={reset}>   Hủy </Button>
             </ButtonWrapper>
         </Container>
+        
     );
 }
-export default NumPicker
+export default BoundForm
