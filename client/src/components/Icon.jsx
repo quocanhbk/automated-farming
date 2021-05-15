@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import {getFader} from '../utils/color'
 
 const Container = styled.div`
     display: flex;
@@ -7,7 +8,7 @@ const Container = styled.div`
     border-radius: 99px;
     transition: background linear 0.1s;
     &:hover {
-        background: ${props => props.theme.color.border.primary};
+        background: ${props => getFader(props.theme.color.border.primary, 0.5)};
     }
 `
 

@@ -14,8 +14,8 @@ const theme = {
         info: '#256EC2', // Opal 700
       },
       fill: {
-        primary: '#174091', // Opal 900
-        secondary: '#212223', // Obsidian 900
+        primary: '#198BA9', // Opal 900
+        secondary: '#FD7F18', // Obsidian 900
         disabled: '#C3C3C3',
         success: '#0A842F', // Green 800
         warning: '#FEBA00',

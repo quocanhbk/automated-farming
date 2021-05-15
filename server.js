@@ -24,7 +24,6 @@ client.on('message', (topic, message) => {
     console.log("- Receive a message from", topic, ": ", message.toString())
 })
 
-
 app.post('/pub', (req, res) => {
     let message = req.body.message
     let feed = feedList.find(feed => feed.name === req.body.topic)

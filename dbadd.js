@@ -9,5 +9,14 @@ let conn = mysql.createConnection({
 })
 
 conn.connect((err) => {
-    if (!err) console.log("Success")
+    if (!err){
+         console.log("Success")
+         var sql = "CREATE TABLE mainsystem(id varchar(9) NOT NULL,sstatus boolean,smode boolean,PRIMARY KEY(id))";
+         conn.query(sql, (err, result) => {
+             if (!err) console.log("Success")
+             else console.log("Failed")
+         })
+    }
+    else console.log("Not connected")
 })
+

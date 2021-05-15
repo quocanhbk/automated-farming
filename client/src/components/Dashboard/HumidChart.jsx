@@ -4,12 +4,12 @@ const Container = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.2rem;
 
     & p {
-        font-size: 1.1rem;
         color: ${props => props.theme.color.fill.primary};
-        font-weight: 700;
+        font-weight: 500;
+        font-style: italic;
     }
 `
 const ChartWrapper = styled.div`
