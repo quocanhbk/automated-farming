@@ -2,7 +2,7 @@ const express = require('express')
 const mqtt = require('mqtt')
 const feedList = require('./feedList')
 require('dotenv').config()
-conn = require('dbadd.js')
+// conn = require('dbadd.js')
 
 const app = express()
 app.use(express.json())
@@ -25,6 +25,9 @@ client.on('message', (topic, message) => {
     console.log("- Receive a message from", topic, ": ", message.toString())
 })
 
+app.post('/api/setting', (req, res) => {
+    res.send("success")
+})
 
 app.post('/pub', (req, res) => {
     let message = req.body.message

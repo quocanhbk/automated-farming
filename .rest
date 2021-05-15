@@ -5,3 +5,12 @@ content-type: application/json
     "topic": "button",
     "message": "hello button from node"
 }
+
+###
+
+POST http://localhost:5000/api/setting HTTP/1.1
+content-type: application/json
+
+{
+    "setting": "50"
+}
