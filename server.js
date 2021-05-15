@@ -26,7 +26,23 @@ client.on('message', (topic, message) => {
 })
 
 app.post('/api/setting', (req, res) => {
-    res.send("success")
+    let feed = feedList.find(feed => feed.name == req.body.topic)
+    let setting = req.body.setting 
+    if (setting >= 0 && setting <= 100)
+    {
+        let message = "Bạn đã điều chỉnh công suất bơm!"
+        client.publish(feed.link, message)
+        res.json({
+            status: "Success",
+            topic: req.body.topic,
+            feed: feed.link,
+            setting: setting
+        })
+    }
+    else
+    {
+        res.send("Error, Invalid value!")
+    }
 })
 
 app.post('/pub', (req, res) => {
