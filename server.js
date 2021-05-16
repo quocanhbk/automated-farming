@@ -79,10 +79,10 @@ app.post('/humid', (req, res) => {
     let bottom = req.body.bottom;
     
     if (top && bottom) {
-        if (top > 125 ) {
-            res.send("Too high");
-        } else if(bottom < 50) {
-            res.send("Too high");
+        if (top > 1023 * 2.55) {
+            res.status(400).send({error: "Top value too high"});
+        } else if(bottom < 0) {
+            res.status(400).send({error: "Bottom value toooo low"});
         }
 
         var message = {
@@ -90,16 +90,15 @@ app.post('/humid', (req, res) => {
             "bottom": bottom
         };
         var humid = feedList[3]
-
         client.publish(humid.link, message)
-        res.json({
-            status: "Success",
+        res.status(200).send({
+            status: "Added top and bottom value successfully",
             topic: humid.name,
             feed: humid.link,
             message: message
         })
     } else {
-        res.send("Must have both top and bottom value")
+        res.status(400).send({error: "Must have both top and bottom value"})
     }
 })
 
