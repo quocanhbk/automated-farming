@@ -30,18 +30,44 @@ app.post('/api/setting', (req, res) => {
     let setting = req.body.setting 
     if (setting >= 0 && setting <= 100)
     {
-        let message = "Bạn đã điều chỉnh công suất bơm!"
-        client.publish(feed.link, message)
+        // let message = "Bạn đã điều chỉnh công suất bơm!"
+        // client.publish(feed.link, message)
+        // let message = {
+        //     status: "Success",
+        //     topic: req.body.topic,
+        //     feed: feed.link,
+        //     setting: setting
+        // }
+        let topic = {
+            id: "10",
+            name: "DRV_PWM",
+            data: setting * 2.55,
+            unit: ""
+        }
+        res.json(topic)
+        client.publish(feed.link, topic)
+    }
+    else
+    {
         res.json({
-            status: "Success",
-            topic: req.body.topic,
-            feed: feed.link,
-            setting: setting
+            error: "Error, Invalid value!"
+        })
+    }
+})
+
+app.get('/api/setting', (req, res) => {
+    let setting = req.body.setting 
+    if (setting >= 0 && setting <= 100)
+    {
+        res.status(200).json({
+            message: "Success"
         })
     }
     else
     {
-        res.send("Error, Invalid value!")
+        res.status(400).json({
+            error: "ERROR MESSAGE"
+        })
     }
 })
 
