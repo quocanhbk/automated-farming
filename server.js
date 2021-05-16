@@ -2,7 +2,7 @@ const express = require('express')
 const mqtt = require('mqtt')
 const feedList = require('./feedList')
 require('dotenv').config()
-// conn = require('dbadd.js')
+conn = require('dbadd.js')
 
 const app = express()
 app.use(express.json())
@@ -74,7 +74,7 @@ app.get('/api/setting', (req, res) => {
     }
 })
 
-app.post('/humid', (req, res) => {
+app.put('/humid', (req, res) => {
     let top = req.body.top
     let bottom = req.body.bottom;
     
@@ -90,12 +90,15 @@ app.post('/humid', (req, res) => {
             "bottom": bottom
         };
         var humid = feedList[3]
-        client.publish(humid.link, message)
-        res.status(200).send({
-            status: "Added top and bottom value successfully",
-            topic: humid.name,
-            feed: humid.link,
-            message: message
+
+        conn.query("UPDATE farm.sensor SET upper_bound = ? , lower_bound = ? WHERE system_id = '101'", [top, bottom], function (error, results, fields) {
+            if (error) throw error;
+            return res.status(200).send({
+                status: "Added top and bottom value successfully",
+                topic: humid.name,
+                feed: humid.link,
+                message: message
+            });
         })
     } else {
         res.status(400).send({error: "Must have both top and bottom value"})
