@@ -1,13 +1,15 @@
-const mysql = require('mysql')
+const { connect } = require('mqtt');
+var mysql = require('mysql');
 
-let conn = mysql.createConnection({
-    host: 'mysql-30814-0.cloudclusters.net',
-    port: 30848,
-    database: 'farm',
-    user: 'staff',
-    password: 'password'
-})
+var conn = mysql.createConnection({
+  host: "mysql-30814-0.cloudclusters.net",
+  port: 30848,
+  user: "staff",
+  password: "password",
+  database: "farm"
+});
 
+<<<<<<< HEAD
 conn.connect((err) => {
     if (!err){
          console.log("Success")
@@ -20,3 +22,17 @@ conn.connect((err) => {
     else console.log("Not connected")
 })
 
+=======
+module.exports = conn
+
+conn.connect(function(err) {
+  if (!err){
+  console.log("Connected!");
+  }
+  else{
+    console.log("No Connect")
+    console.log(err)
+  }
+});
+conn.end()
+>>>>>>> e24ddee9d25d4d552ad1921959135dc6c844149d

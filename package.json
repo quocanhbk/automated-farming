@@ -15,7 +15,8 @@
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "mqtt": "^4.2.6",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "sequelize": "^6.6.2"
   },
   "devDependencies": {
     "concurrently": "^6.1.0",
