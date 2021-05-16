@@ -85,8 +85,8 @@ const ButtonWrapper = styled.div`
     justify-content: space-between;
 `
 const BoundForm = (props) => {
-    const [upper, setUpper] = useState(parseInt(props.lower));
-    const [lower, setLower] = useState(parseInt(props.upper));
+    const [upper, setUpper] = useState(parseInt(props.upper));
+    const [lower, setLower] = useState(parseInt(props.lower));
     const reset = () => {
         setUpper(parseInt(props.upper));
         setLower(parseInt(props.lower));
