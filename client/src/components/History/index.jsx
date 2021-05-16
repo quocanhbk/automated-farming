@@ -23,7 +23,7 @@ const Body = styled.div`
 const columns = [
     { name: 'time', header: 'Thời điểm', defaultFlex: 2 },
     { name: 'humid', header: 'Độ ẩm', defaultFlex: 1  },
-    { name: 'duration', header: 'Thời gian \n (giây)', defaultFlex: 1 }
+    { name: 'duration', header: 'Thời gian(s)', defaultFlex: 1 }
 ];
 const gridStyle = { minHeight: 550 };
 const rows = [
