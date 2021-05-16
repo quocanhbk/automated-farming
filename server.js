@@ -2,7 +2,27 @@ const express = require('express')
 const mqtt = require('mqtt')
 const feedList = require('./feedList')
 require('dotenv').config()
-conn = require('dbadd.js')
+//conn = require('dbadd.js')
+
+var mysql = require('mysql');
+
+var conn = mysql.createConnection({
+  host: "mysql-30814-0.cloudclusters.net",
+  port: 30848,
+  user: "staff",
+  password: "password",
+  database: "farm"
+});
+
+conn.connect(function(err) {
+  if (!err){
+  console.log("Connected!");
+  }
+  else{
+    console.log("No Connect")
+    console.log(err)
+  }
+});
 
 const app = express()
 app.use(express.json())
@@ -75,33 +95,36 @@ app.get('/api/setting', (req, res) => {
 })
 
 app.put('/humid', (req, res) => {
-    let top = req.body.top
+    let top = req.body.top;
     let bottom = req.body.bottom;
     
     if (top && bottom) {
         if (top > 1023 * 2.55) {
-            res.status(400).send({error: "Top value too high"});
+            return res.status(400).send({error: "Top value too high"});
         } else if(bottom < 0) {
-            res.status(400).send({error: "Bottom value toooo low"});
-        }
+            return res.status(400).send({error: "Bottom value too low"});
+        } else if (top < bottom) return res.status(400).send({error: "Bottom value is higher than top value"})
 
         var message = {
             "top": top,
             "bottom": bottom
         };
         var humid = feedList[3]
+        let q = `UPDATE farm.sensor
+        SET upper_bound = ? , lower_bound = ?
+        WHERE system_id = '101'`;
 
-        conn.query("UPDATE farm.sensor SET upper_bound = ? , lower_bound = ? WHERE system_id = '101'", [top, bottom], function (error, results, fields) {
-            if (error) throw error;
+        conn.query(q,[top, bottom, '101'],function(err, result) {
+            if (err) return console.error(err.message);
             return res.status(200).send({
                 status: "Added top and bottom value successfully",
                 topic: humid.name,
                 feed: humid.link,
                 message: message
-            });
-        })
+            })
+        })   
     } else {
-        res.status(400).send({error: "Must have both top and bottom value"})
+        return res.status(400).send({error: "Must have both top and bottom value"})
     }
 })
 
