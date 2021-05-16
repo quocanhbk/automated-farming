@@ -38,18 +38,21 @@ app.post('/api/setting', (req, res) => {
         //     feed: feed.link,
         //     setting: setting
         // }
+        let message = {
+            "setting": setting * 2.55
+        }
         let topic = {
             id: "10",
             name: "DRV_PWM",
             data: setting * 2.55,
             unit: ""
         }
-        res.json(topic)
-        client.publish(feed.link, topic)
+        client.publish(feed.link, message)
+        res.status(200).json(topic)
     }
     else
     {
-        res.json({
+        res.status(400).json({
             error: "Error, Invalid value!"
         })
     }
