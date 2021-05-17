@@ -67,8 +67,8 @@ app.post('/api/setting', (req, res) => {
             data: setting * 2.55,
             unit: ""
         }
-        client.publish(feed.link, message)
-        res.status(200).json(topic)
+        client.publish(feed.link, topic)
+        res.status(200).json(message)
     }
     else
     {
