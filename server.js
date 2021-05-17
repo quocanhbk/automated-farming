@@ -58,41 +58,20 @@ app.post('/api/setting', (req, res) => {
             data: setting * 2.55,
             unit: ""
         }
-        let str_query = "SELECT power FROM motor WHERE system_id = 101"
-        conn.query(str_query, function (err, result) {
+
+        let upd_query = "UPDATE motor SET power = ? WHERE system_id = 101"
+        conn.query(upd_query, [setting], function (err, result) {
             if (err) {
+                res.status(400).json({
+                    error: err
+                })
                 throw err
             }
             else {
-                if (result.length == 0) {
-                    let ins_query = "INSERT INTO motor (system_id, power) VALUES (101, ?)"
-                    conn.query(ins_query, [setting], function (err, result) {
-                        if (err) {
-                            throw err
-                        }
-                        else {
-                            console.log(result.affectedRows)
-                            adafruit.publish(feed.link, topic)
-                            res.status(200).json(message)
-                        }
-                    })
-                }
-                else {
-                    let upd_query = "UPDATE motor SET power = ? WHERE system_id = 101"
-                    conn.query(upd_query, [setting], function (err, result) {
-                        if (err) {
-                            throw err
-                        }
-                        else {
-                            console.log(result.affectedRows)
-                            adafruit.publish(feed.link, topic)
-                            res.status(200).json(message)
-                        }
-                    })
-                }
+                adafruit.publish(feed.link, topic)
+                res.status(200).json(message)
             }
         })
-
     }
     else {
         res.status(400).json({
@@ -106,7 +85,7 @@ app.get('/api/setting', (req, res) => {
     conn.query(str_query, function (err, result) {
         if (err) {
             res.status(400).json({
-                error: "ERROR MESSAGE"
+                error: err
             })
             throw err
         }
@@ -117,7 +96,6 @@ app.get('/api/setting', (req, res) => {
                 })
             }
             else {
-                console.log(result[0].power)
                 res.status(200).json({
                     setting: result[0].power
                 })
