@@ -12,14 +12,15 @@ const Container = styled.div`
         font-weight: 500;
         font-size: 1.2rem;
         margin-bottom: 0.2rem;
+        font-family: "Paytone One";
     }
 `
 
 const Header = () => {
     return (
         <Container>
-                <Icon ico={'burger'}/>
-            <h3>Hexagon Farming System</h3>
+            <Icon ico={'burger'}/>
+            <h3>Smiley Farm</h3>
         </Container>
     )
 }

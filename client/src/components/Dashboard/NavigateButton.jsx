@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import Icon from "../Icon"
 import {navigate} from '@reach/router'
+import { getFader } from "../../utils/color"
 const Container = styled.button`
     cursor: pointer;
     border: none;
@@ -11,7 +12,11 @@ const Container = styled.button`
     display: flex;
     justify-content: center;
     align-items: stretch;
-    
+    transition: background 0.15s ease-in-out;
+    &:hover {
+        background: ${props => props.theme.color.fill.secondary}
+    }
+
     &:before {
         content: "";
         display: table;

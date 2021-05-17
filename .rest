@@ -8,6 +8,23 @@ content-type: application/json
 
 ###
 
+
+POST http://localhost:5000/power HTTP/1.1
+content-type: application/json
+
+{
+    "power": "50"
+}
+
+###
+POST http://localhost:5000/humid HTTP/1.1
+content-type: application/json
+
+{
+    "top": "50",
+    "bottom": "25"
+}
+###
 POST http://localhost:5000/api/setting HTTP/1.1
 content-type: application/json
 
@@ -38,15 +55,3 @@ GET http://localhost:5010/api/power HTTP/1.1
 POST http://localhost:5000/api/mode HTTP/1.1
 content-type: application/json
 
-{
-    "power": "aotu"|"manual",
-    "message": "success",
-    "error": "message_error"
-}
-###
-GET http://localhost:5000/api/mode HTTP/1.1
-content-type: application/json
-
-{
-    "power": "MODE"   
-}
