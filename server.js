@@ -7,21 +7,21 @@ require('dotenv').config()
 var mysql = require('mysql');
 
 var conn = mysql.createConnection({
-  host: "mysql-30814-0.cloudclusters.net",
-  port: 30848,
-  user: "staff",
-  password: "password",
-  database: "farm"
+    host: "mysql-30814-0.cloudclusters.net",
+    port: 30848,
+    user: "staff",
+    password: "password",
+    database: "farm"
 });
 
-conn.connect(function(err) {
-  if (!err){
-  console.log("Connected!");
-  }
-  else{
-    console.log("No Connect")
-    console.log(err)
-  }
+conn.connect(function (err) {
+    if (!err) {
+        console.log("Connected!");
+    }
+    else {
+        console.log("No Connect")
+        console.log(err)
+    }
 });
 
 const app = express()
@@ -47,9 +47,8 @@ adafruit.on('message', (topic, message) => {
 
 app.post('/api/setting', (req, res) => {
     let feed = feedList.find(feed => feed.name == req.body.topic)
-    let setting = req.body.setting 
-    if (setting >= 0 && setting <= 100)
-    {
+    let setting = req.body.setting
+    if (setting >= 0 && setting <= 100) {
         let message = {
             "setting": setting * 2.55
         }
@@ -59,11 +58,43 @@ app.post('/api/setting', (req, res) => {
             data: setting * 2.55,
             unit: ""
         }
-        adafruit.publish(feed.link, topic)
-        res.status(200).json(message)
+        let str_query = "SELECT power FROM motor WHERE system_id = 101"
+        conn.query(str_query, function (err, result) {
+            if (err) {
+                throw err
+            }
+            else {
+                if (result.length == 0) {
+                    let ins_query = "INSERT INTO motor (system_id, power) VALUES (101, " + setting + ")"
+                    conn.query(ins_query, function (err, result) {
+                        if (err) {
+                            throw err
+                        }
+                        else {
+                            console.log(result.affectedRows)
+                            adafruit.publish(feed.link, topic)
+                            res.status(200).json(message)
+                        }
+                    })
+                }
+                else {
+                    let upd_query = "UPDATE motor SET power = " + setting + " WHERE system_id = 101"
+                    conn.query(upd_query, function (err, result) {
+                        if (err) {
+                            throw err
+                        }
+                        else {
+                            console.log(result.affectedRows)
+                            adafruit.publish(feed.link, topic)
+                            res.status(200).json(message)
+                        }
+                    })
+                }
+            }
+        })
+
     }
-    else
-    {
+    else {
         res.status(400).json({
             error: "Error, Invalid value!"
         })
@@ -71,31 +102,40 @@ app.post('/api/setting', (req, res) => {
 })
 
 app.get('/api/setting', (req, res) => {
-    let setting = req.body.setting 
-    if (setting >= 0 && setting <= 100)
-    {
-        res.status(200).json({
-            message: "Success"
-        })
-    }
-    else
-    {
-        res.status(400).json({
-            error: "ERROR MESSAGE"
-        })
-    }
+    let str_query = "SELECT power FROM motor WHERE system_id = 101"
+    conn.query(str_query, function (err, result) {
+        if (err) {
+            res.status(400).json({
+                error: "ERROR MESSAGE"
+            })
+            throw err
+        }
+        else {
+            if (result.length == 0) {
+                res.status(400).json({
+                    error: "ERROR MESSAGE"
+                })
+            }
+            else {
+                console.log(result[0].power)
+                res.status(200).json({
+                    setting: result[0].power
+                })
+            }
+        }
+    })
 })
 
 app.put('/humid', (req, res) => {
     let top = req.body.top;
     let bottom = req.body.bottom;
-    
+
     if (top && bottom) {
         if (top > 1023 * 2.55) {
-            return res.status(400).send({error: "Top value too high"});
-        } else if(bottom < 0) {
-            return res.status(400).send({error: "Bottom value too low"});
-        } else if (top < bottom) return res.status(400).send({error: "Bottom value is higher than top value"})
+            return res.status(400).send({ error: "Top value too high" });
+        } else if (bottom < 0) {
+            return res.status(400).send({ error: "Bottom value too low" });
+        } else if (top < bottom) return res.status(400).send({ error: "Bottom value is higher than top value" })
 
         var message = {
             "top": top,
@@ -106,7 +146,7 @@ app.put('/humid', (req, res) => {
         SET upper_bound = ? , lower_bound = ?
         WHERE system_id = '101'`;
 
-        conn.query(q,[top, bottom, '101'],function(err, result) {
+        conn.query(q, [top, bottom, '101'], function (err, result) {
             if (err) return console.error(err.message);
             return res.status(200).send({
                 status: "Added top and bottom value successfully",
@@ -114,16 +154,16 @@ app.put('/humid', (req, res) => {
                 feed: humid.link,
                 message: message
             })
-        })   
+        })
     } else {
-        return res.status(400).send({error: "Must have both top and bottom value"})
+        return res.status(400).send({ error: "Must have both top and bottom value" })
     }
 })
 
 app.post('/pub', (req, res) => {
     let message = req.body.message
     let feed = feedList.find(feed => feed.name === req.body.topic)
-    
+
     if (!feed) {
         res.send("Invalid topic")
     } else if (message && feed) {
