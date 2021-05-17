@@ -147,4 +147,29 @@ app.post('/pub', (req, res) => {
     }
 })
 
-app.listen(5000, () => console.log("Server is running"))
+app.post('/api/power',(req,res) =>{
+    let power = req.body.power
+    var num =  power == "on"?1:0
+        
+        let p = `UPDATE mainsystem SET sstatus = ${num} WHERE id = 101`;
+        conn.query(p,function(err, result) {
+            if (err) res.json({error: err})
+            else res.status(200).json({status: "success"})
+        })
+    
+}
+)
+
+app.get('/api/power', (req, res) => { 
+    let q = `SELECT sstatus FROM mainsystem WHERE id = 101`;
+    conn.query(q,function(err, result){
+         if (err) res.json({error: err})
+         else { 
+            let power = result[0]["sstatus"] == 1 ? "on":"off"
+            res.status(200).json({"power": power})
+         }
+     })
+
+})
+
+app.listen(5010, () => console.log("Server is running"))
