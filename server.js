@@ -27,21 +27,21 @@ conn.connect(function(err) {
 const app = express()
 app.use(express.json())
 
-const client = mqtt.connect('https://io.adafruit.com', {
+const adafruit = mqtt.connect('https://io.adafruit.com', {
     username: process.env.IO_USERNAME,
     password: process.env.IO_PASSWORD
 })
 
 //Connect and subscribe to adafruit server
-client.on('connect', () => {
+adafruit.on('connect', () => {
     console.log("Connected to adafruit successfully")
-    client.subscribe(feedList.map(feed => feed.link), (err) => {
+    adafruit.subscribe(feedList.map(feed => feed.link), (err) => {
         if (!err) console.log("Subscribe to all feeds")
     })
 })
 
 // Message received from subscibed topics
-client.on('message', (topic, message) => {
+adafruit.on('message', (topic, message) => {
     console.log("- Receive a message from", topic, ": ", message.toString())
 })
 
@@ -50,14 +50,6 @@ app.post('/api/setting', (req, res) => {
     let setting = req.body.setting 
     if (setting >= 0 && setting <= 100)
     {
-        // let message = "Bạn đã điều chỉnh công suất bơm!"
-        // client.publish(feed.link, message)
-        // let message = {
-        //     status: "Success",
-        //     topic: req.body.topic,
-        //     feed: feed.link,
-        //     setting: setting
-        // }
         let message = {
             "setting": setting * 2.55
         }
@@ -67,7 +59,7 @@ app.post('/api/setting', (req, res) => {
             data: setting * 2.55,
             unit: ""
         }
-        client.publish(feed.link, topic)
+        adafruit.publish(feed.link, topic)
         res.status(200).json(message)
     }
     else
@@ -135,7 +127,7 @@ app.post('/pub', (req, res) => {
     if (!feed) {
         res.send("Invalid topic")
     } else if (message && feed) {
-        client.publish(feed.link, message)
+        adafruit.publish(feed.link, message)
         res.json({
             status: "Success",
             topic: req.body.topic,
