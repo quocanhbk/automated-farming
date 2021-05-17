@@ -65,8 +65,8 @@ app.post('/api/setting', (req, res) => {
             }
             else {
                 if (result.length == 0) {
-                    let ins_query = "INSERT INTO motor (system_id, power) VALUES (101, " + setting + ")"
-                    conn.query(ins_query, function (err, result) {
+                    let ins_query = "INSERT INTO motor (system_id, power) VALUES (101, ?)"
+                    conn.query(ins_query, [setting], function (err, result) {
                         if (err) {
                             throw err
                         }
@@ -78,8 +78,8 @@ app.post('/api/setting', (req, res) => {
                     })
                 }
                 else {
-                    let upd_query = "UPDATE motor SET power = " + setting + " WHERE system_id = 101"
-                    conn.query(upd_query, function (err, result) {
+                    let upd_query = "UPDATE motor SET power = ? WHERE system_id = 101"
+                    conn.query(upd_query, [setting], function (err, result) {
                         if (err) {
                             throw err
                         }
