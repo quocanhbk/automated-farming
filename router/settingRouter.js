@@ -1,17 +1,11 @@
 const express = require('express')
-const mqtt = require('mqtt')
 const router = express.Router()
 const feedList = require('../feedList')
-let conn = require('../dbadd.js')
-
-const adafruit = mqtt.connect('https://io.adafruit.com', {
-    username: process.env.IO_USERNAME,
-    password: process.env.IO_PASSWORD
-})
+let {dbConn, adafruit} = require('../connection.js')
 
 router.get('/', (req, res) => {
     let str_query = "SELECT power FROM motor WHERE system_id = 101"
-    conn.query(str_query, function (err, result) {
+    dbConn.query(str_query, function (err, result) {
         if (err) {
             res.status(400).json({
                 error: err
@@ -39,7 +33,7 @@ router.post('/', (req, res) => {
             unit: ""
         }
         let upd_query = "UPDATE motor SET power = ? WHERE system_id = 101"
-        conn.query(upd_query, [setting], function (err, result) {
+        dbConn.query(upd_query, [setting], function (err, result) {
             if (err) {
                 res.status(400).json({
                     error: err

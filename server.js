@@ -1,31 +1,13 @@
 const express = require('express')
-const mqtt = require('mqtt')
 const feedList = require('./feedList')
 require('dotenv').config()
-let conn = require('./dbadd.js')
-
+let {dbConn} = require('./connection')
 let settingRouter = require('./router/settingRouter')
+
 
 const app = express()
 app.use(express.json())
 
-const adafruit = mqtt.connect('https://io.adafruit.com', {
-    username: process.env.IO_USERNAME,
-    password: process.env.IO_PASSWORD
-})
-
-//Connect and subscribe to adafruit server
-adafruit.on('connect', () => {
-    console.log("Connected to adafruit successfully")
-    adafruit.subscribe(feedList.map(feed => feed.link), (err) => {
-        if (!err) console.log("Subscribe to all feeds")
-    })
-})
-
-// Message received from subscibed topics
-adafruit.on('message', (topic, message) => {
-    console.log("- Receive a message from", topic, ": ", message.toString())
-})
 
 app.use('/api/setting', settingRouter)
 
@@ -49,7 +31,7 @@ app.put('/humid', (req, res) => {
         SET upper_bound = ? , lower_bound = ?
         WHERE system_id = '101'`;
 
-        conn.query(q, [top, bottom, '101'], function (err, result) {
+        dbConn.query(q, [top, bottom, '101'], function (err, result) {
             if (err) return console.error(err.message);
             return res.status(200).send({
                 status: "Added top and bottom value successfully",
@@ -63,31 +45,12 @@ app.put('/humid', (req, res) => {
     }
 })
 
-app.post('/pub', (req, res) => {
-    let message = req.body.message
-    let feed = feedList.find(feed => feed.name === req.body.topic)
-
-    if (!feed) {
-        res.send("Invalid topic")
-    } else if (message && feed) {
-        adafruit.publish(feed.link, message)
-        res.json({
-            status: "Success",
-            topic: req.body.topic,
-            feed: feed.link,
-            message: message
-        })
-    } else {
-        res.send("Body must contain topic and message")
-    }
-})
-
 app.post('/api/power', (req, res) => {
     let power = req.body.power
     var num = power == "on" ? 1 : 0
 
     let p = `UPDATE mainsystem SET sstatus = ${num} WHERE id = 101`;
-    conn.query(p, function (err, result) {
+    dbConn.query(p, function (err, result) {
         if (err) res.json({ error: err })
         else res.status(200).json({ status: "success" })
     })
@@ -97,7 +60,7 @@ app.post('/api/power', (req, res) => {
 
 app.get('/api/power', (req, res) => {
     let q = `SELECT sstatus FROM mainsystem WHERE id = 101`;
-    conn.query(q, function (err, result) {
+    dbConn.query(q, function (err, result) {
         if (err) res.json({ error: err })
         else {
             let power = result[0]["sstatus"] == 1 ? "on" : "off"
