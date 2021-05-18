@@ -4,6 +4,8 @@ const feedList = require('./feedList')
 require('dotenv').config()
 let conn = require('./dbadd.js')
 
+let settingRouter = require('./router/settingRouter')
+
 const app = express()
 app.use(express.json())
 
@@ -25,12 +27,14 @@ adafruit.on('message', (topic, message) => {
     console.log("- Receive a message from", topic, ": ", message.toString())
 })
 
+app.use('/api/setting', settingRouter)
+
 app.post('/api/setting', (req, res) => {
     let feed = feedList.find(feed => feed.name == req.body.topic)
     let setting = req.body.setting
     if (setting >= 0 && setting <= 100) {
         let message = {
-            "setting": setting * 2.55
+            "message": "success"
         }
         let topic = {
             id: "10",
@@ -38,41 +42,20 @@ app.post('/api/setting', (req, res) => {
             data: setting * 2.55,
             unit: ""
         }
-        let str_query = "SELECT power FROM motor WHERE system_id = 101"
-        conn.query(str_query, function (err, result) {
+
+        let upd_query = "UPDATE motor SET power = ? WHERE system_id = 101"
+        conn.query(upd_query, [setting], function (err, result) {
             if (err) {
+                res.status(400).json({
+                    error: err
+                })
                 throw err
             }
             else {
-                if (result.length == 0) {
-                    let ins_query = "INSERT INTO motor (system_id, power) VALUES (101, ?)"
-                    conn.query(ins_query, [setting], function (err, result) {
-                        if (err) {
-                            throw err
-                        }
-                        else {
-                            console.log(result.affectedRows)
-                            adafruit.publish(feed.link, topic)
-                            res.status(200).json(message)
-                        }
-                    })
-                }
-                else {
-                    let upd_query = "UPDATE motor SET power = ? WHERE system_id = 101"
-                    conn.query(upd_query, [setting], function (err, result) {
-                        if (err) {
-                            throw err
-                        }
-                        else {
-                            console.log(result.affectedRows)
-                            adafruit.publish(feed.link, topic)
-                            res.status(200).json(message)
-                        }
-                    })
-                }
+                adafruit.publish(feed.link, topic)
+                res.status(200).json(message)
             }
         })
-
     }
     else {
         res.status(400).json({
@@ -85,10 +68,7 @@ app.get('/api/setting', (req, res) => {
     let str_query = "SELECT power FROM motor WHERE system_id = 101"
     conn.query(str_query, function (err, result) {
         if (err) {
-            res.status(400).json({
-                error: "ERROR MESSAGE"
-            })
-            throw err
+            res.status(400).json({error: err})
         }
         else {
             if (result.length == 0) {
@@ -97,7 +77,6 @@ app.get('/api/setting', (req, res) => {
                 })
             }
             else {
-                console.log(result[0].power)
                 res.status(200).json({
                     setting: result[0].power
                 })
@@ -157,6 +136,31 @@ app.post('/pub', (req, res) => {
     } else {
         res.send("Body must contain topic and message")
     }
+})
+
+app.post('/api/power',(req,res) =>{
+    let power = req.body.power
+    var num =  power == "on"?1:0
+        
+        let p = `UPDATE mainsystem SET sstatus = ${num} WHERE id = 101`;
+        conn.query(p,function(err, result) {
+            if (err) res.json({error: err})
+            else res.status(200).json({status: "success"})
+        })
+    
+}
+)
+
+app.get('/api/power', (req, res) => { 
+    let q = `SELECT sstatus FROM mainsystem WHERE id = 101`;
+    conn.query(q,function(err, result){
+         if (err) res.json({error: err})
+         else { 
+            let power = result[0]["sstatus"] == 1 ? "on":"off"
+            res.status(200).json({"power": power})
+         }
+     })
+
 })
 
 app.listen(5000, () => console.log("Server is running"))
