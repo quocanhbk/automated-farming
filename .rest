@@ -43,15 +43,20 @@ content-type: application/json
     "setting": "50"
 }
 ###
-POST http://localhost:5002/api/power HTTP/1.1
+POST http://localhost:5000/api/power HTTP/1.1
 content-type: application/json
 
 {
-    "power": "off"
+    "power": "on"
 }
 ###
-GET http://localhost:5010/api/power HTTP/1.1
+GET http://localhost:5000/api/power HTTP/1.1
 ###
 POST http://localhost:5000/api/mode HTTP/1.1
 content-type: application/json
 
+{
+    "mode": "auto"
+}
+###
+GET http://localhost:5000/api/mode HTTP/1.1
