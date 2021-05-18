@@ -182,4 +182,4 @@ app.get('/api/power', (req, res) => {
 
 })
 
-app.listen(5010, () => console.log("Server is running"))
+app.listen(5000, () => console.log("Server is running"))
