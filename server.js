@@ -4,7 +4,8 @@ require('dotenv').config()
 
 let {dbConn} = require('./connection')
 let settingRouter = require('./router/settingRouter')
-let apiRouter = require('./router/apiRouter')
+let modeRouter = require('./router/modeRouter')
+let powerRouter = require('./router/powerRouter')
 
 
 
@@ -53,8 +54,8 @@ app.put('/humid', (req, res) => {
 
 
 
-app.use('/', apiRouter)
+app.use('/', modeRouter)
 
-
+app.use('/', powerRouter)
 
 app.listen(5000, () => console.log("Server is running"))
