@@ -2,27 +2,7 @@ const express = require('express')
 const mqtt = require('mqtt')
 const feedList = require('./feedList')
 require('dotenv').config()
-//conn = require('dbadd.js')
-
-var mysql = require('mysql');
-
-var conn = mysql.createConnection({
-    host: "mysql-30814-0.cloudclusters.net",
-    port: 30848,
-    user: "staff",
-    password: "password",
-    database: "farm"
-});
-
-conn.connect(function (err) {
-    if (!err) {
-        console.log("Connected!");
-    }
-    else {
-        console.log("No Connect")
-        console.log(err)
-    }
-});
+let conn = require('./dbadd.js')
 
 const app = express()
 app.use(express.json())

@@ -8,7 +8,6 @@ content-type: application/json
 
 ###
 
-<<<<<<< HEAD
 POST http://localhost:5000/power HTTP/1.1
 content-type: application/json
 
@@ -24,7 +23,7 @@ content-type: application/json
     "top": "50",
     "bottom": "25"
 }
-=======
+###
 POST http://localhost:5000/api/setting HTTP/1.1
 content-type: application/json
 
@@ -32,10 +31,6 @@ content-type: application/json
     "topic": "drv",
     "setting": "50"
 }
-<<<<<<< HEAD
->>>>>>> e24ddee9d25d4d552ad1921959135dc6c844149d
-=======
-
 ###
 
 GET  http://localhost:5000/api/setting HTTP/1.1
@@ -45,5 +40,3 @@ content-type: application/json
     "topic": "drv",
     "setting": "50"
 }
-
->>>>>>> 30f42e95002491f4295f4043ac9e664f04198e32
