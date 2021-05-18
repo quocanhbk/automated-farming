@@ -3,13 +3,13 @@ const cookieParser = require('cookie-parser')
 const feedList = require('./feedList')
 require('dotenv').config()
 
-let {dbConn} = require('./connection')
+let {dbConn, adafruit} = require('./connection')
 let {requireAuth} = require('./middlewares/authMiddleware')
 let settingRoute = require('./router/settingRoute')
 let modeRoute = require('./router/modeRoute')
 let powerRoute = require('./router/powerRoute')
 let authRoute = require('./router/authRoute')
-
+let {handleIotButton} = require('./iotFunctions')
 const app = express()
 app.use(express.json())
 app.use(cookieParser())
@@ -55,6 +55,14 @@ app.put('/humid', (req, res) => {
         })
     } else {
         return res.status(400).send({ error: "Must have both top and bottom value" })
+    }
+})
+
+// Handle input from IOT
+adafruit.on('message', (topic, message) => {
+    let topicName = feedList.find(feed => feed.link === topic).name
+    if (topicName === 'button') {
+        handleIotButton(message.toString())
     }
 })
 
