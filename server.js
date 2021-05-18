@@ -3,6 +3,7 @@ const mqtt = require('mqtt')
 const feedList = require('./feedList')
 require('dotenv').config()
 //conn = require('dbadd.js')
+var apiRouter = require('./router/api');
 
 var mysql = require('mysql');
 
@@ -23,7 +24,7 @@ conn.connect(function (err) {
         console.log(err)
     }
 });
-
+module.exports = conn
 const app = express()
 app.use(express.json())
 
@@ -160,55 +161,8 @@ app.post('/pub', (req, res) => {
     }
 })
 
-app.post('/api/power',(req,res) =>{
-    let power = req.body.power
-    var num =  power == "on"?1:0
-        
-        let p = `UPDATE mainsystem SET sstatus = ${num} WHERE id = 101`;
-        conn.query(p,function(err, result) {
-            if (err) res.json({error: err})
-            else res.status(200).json({status: "success"})
-        })
-    
-}
-)
 
-app.get('/api/power', (req, res) => { 
-    let q = `SELECT sstatus FROM mainsystem WHERE id = 101`;
-    conn.query(q,function(err, result){
-         if (err) res.json({error: err})
-         else { 
-            let power = result[0]["sstatus"] == 1 ? "on":"off"
-            res.status(200).json({"power": power})
-         }
-     })
+app.use('/', apiRouter)
 
-})
 
-app.post('/api/mode',(req,res) =>{
-    let mode = req.body.mode
-    var num =  mode == "auto"?1:0
-        
-        let p = `UPDATE mainsystem SET smode = ${num} WHERE id = 101`;
-        conn.query(p,function(err, result) {
-            if (err) res.json({error: err})
-            else res.status(200).json({status: "success"})
-        
-        })
-    
-}
-)
-
-app.get('/api/mode', (req, res) => { 
-    let m = `SELECT smode FROM mainsystem WHERE id = 101`;
-    conn.query(m,function(err, result){
-         if (err) res.json({error: err})
-         else { 
-            let mode = result[0]["smode"] == 1 ? "auto":"manual"
-            res.status(200).json({"mode": mode})
-         }
-     })
-
-})
-
-app.listen(5000, () => console.log("Server is running"))
+app.listen(5160, () => console.log("Server is running"))
