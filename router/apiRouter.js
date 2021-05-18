@@ -1,13 +1,13 @@
 var express = require('express')
 var router = express.Router();
-let conn = require('dbadd')
+const {dbConn} = require('../connection')
 
 router.post('/api/power',(req,res) =>{
     let power = req.body.power
     var num =  power == "on"?1:0
         
         let p = `UPDATE mainsystem SET sstatus = ${num} WHERE id = 101`;
-        conn.query(p,function(err, result) {
+        dbConn.query(p,function(err, result) {
             if (err) res.json({error: err})
             else res.status(200).json({status: "success"})
         })
@@ -16,7 +16,7 @@ router.post('/api/power',(req,res) =>{
 )
 router.get('/api/power', (req, res) => { 
     let q = `SELECT sstatus FROM mainsystem WHERE id = 101`;
-    conn.query(q,function(err, result){
+    dbConn.query(q,function(err, result){
          if (err) res.json({error: err})
          else { 
             let power = result[0]["sstatus"] == 1 ? "on":"off"
@@ -30,7 +30,7 @@ router.post('/api/mode',(req,res) =>{
     var num =  mode == "auto"?1:0
         
         let p = `UPDATE mainsystem SET smode = ${num} WHERE id = 101`;
-        conn.query(p,function(err, result) {
+        dbConn.query(p,function(err, result) {
             if (err) res.json({error: err})
             else res.status(200).json({status: "success"})
         
@@ -41,7 +41,7 @@ router.post('/api/mode',(req,res) =>{
 
 router.get('/api/mode', (req, res) => { 
     let m = `SELECT smode FROM mainsystem WHERE id = 101`;
-    conn.query(m,function(err, result){
+    dbConn.query(m,function(err, result){
          if (err) res.json({error: err})
          else { 
             let mode = result[0]["smode"] == 1 ? "auto":"manual"

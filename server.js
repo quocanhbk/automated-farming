@@ -1,109 +1,18 @@
 const express = require('express')
-const mqtt = require('mqtt')
 const feedList = require('./feedList')
 require('dotenv').config()
-//conn = require('dbadd.js')
-var apiRouter = require('./router/api');
 
-var mysql = require('mysql');
+let {dbConn} = require('./connection')
+let settingRouter = require('./router/settingRouter')
+let apiRouter = require('./router/apiRouter')
 
-var conn = mysql.createConnection({
-    host: "mysql-30814-0.cloudclusters.net",
-    port: 30848,
-    user: "staff",
-    password: "password",
-    database: "farm"
-});
 
-conn.connect(function (err) {
-    if (!err) {
-        console.log("Connected!");
-    }
-    else {
-        console.log("No Connect")
-        console.log(err)
-    }
-});
-module.exports = conn
+
 const app = express()
 app.use(express.json())
 
-const adafruit = mqtt.connect('https://io.adafruit.com', {
-    username: process.env.IO_USERNAME,
-    password: process.env.IO_PASSWORD
-})
 
-//Connect and subscribe to adafruit server
-adafruit.on('connect', () => {
-    console.log("Connected to adafruit successfully")
-    adafruit.subscribe(feedList.map(feed => feed.link), (err) => {
-        if (!err) console.log("Subscribe to all feeds")
-    })
-})
-
-// Message received from subscibed topics
-adafruit.on('message', (topic, message) => {
-    console.log("- Receive a message from", topic, ": ", message.toString())
-})
-
-app.post('/api/setting', (req, res) => {
-    let feed = feedList.find(feed => feed.name == req.body.topic)
-    let setting = req.body.setting
-    if (setting >= 0 && setting <= 100) {
-        let message = {
-            "setting": setting * 2.55
-        }
-        let topic = {
-            id: "10",
-            name: "DRV_PWM",
-            data: setting * 2.55,
-            unit: ""
-        }
-
-        let upd_query = "UPDATE motor SET power = ? WHERE system_id = 101"
-        conn.query(upd_query, [setting], function (err, result) {
-            if (err) {
-                res.status(400).json({
-                    error: err
-                })
-                throw err
-            }
-            else {
-                adafruit.publish(feed.link, topic)
-                res.status(200).json(message)
-            }
-        })
-    }
-    else {
-        res.status(400).json({
-            error: "Error, Invalid value!"
-        })
-    }
-})
-
-app.get('/api/setting', (req, res) => {
-    let str_query = "SELECT power FROM motor WHERE system_id = 101"
-    conn.query(str_query, function (err, result) {
-        if (err) {
-            res.status(400).json({
-                error: err
-            })
-            throw err
-        }
-        else {
-            if (result.length == 0) {
-                res.status(400).json({
-                    error: "ERROR MESSAGE"
-                })
-            }
-            else {
-                res.status(200).json({
-                    setting: result[0].power
-                })
-            }
-        }
-    })
-})
+app.use('/api/setting', settingRouter)
 
 app.put('/humid', (req, res) => {
     let top = req.body.top;
@@ -128,7 +37,7 @@ app.put('/humid', (req, res) => {
         SET upper_bound = ? , lower_bound = ?
         WHERE system_id = '101'`;
 
-        conn.query(q, [top, bottom, '101'], function (err, result) {
+        dbConn.query(q, [top, bottom, '101'], function (err, result) {
             if (err) return console.error(err.message);
             return res.status(200).send({
                 status: "Added top and bottom value successfully",
@@ -142,27 +51,10 @@ app.put('/humid', (req, res) => {
     }
 })
 
-app.post('/pub', (req, res) => {
-    let message = req.body.message
-    let feed = feedList.find(feed => feed.name === req.body.topic)
-
-    if (!feed) {
-        res.send("Invalid topic")
-    } else if (message && feed) {
-        adafruit.publish(feed.link, message)
-        res.json({
-            status: "Success",
-            topic: req.body.topic,
-            feed: feed.link,
-            message: message
-        })
-    } else {
-        res.send("Body must contain topic and message")
-    }
-})
 
 
 app.use('/', apiRouter)
 
 
-app.listen(5160, () => console.log("Server is running"))
+
+app.listen(5000, () => console.log("Server is running"))

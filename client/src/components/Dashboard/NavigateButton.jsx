@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import Icon from "../Icon"
 import {navigate} from '@reach/router'
-import { getFader } from "../../utils/color"
+
 const Container = styled.button`
     cursor: pointer;
     border: none;

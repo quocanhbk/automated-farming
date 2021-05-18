@@ -12,10 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mqtt": "^4.2.6",
     "mysql": "^2.18.1",
+    "react-table-6": "^6.11.0",
     "sequelize": "^6.6.2"
   },
   "devDependencies": {

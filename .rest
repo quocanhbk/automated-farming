@@ -6,42 +6,20 @@ content-type: application/json
     "message": "hello button from node"
 }
 
-###
+### POST setting to database
 
-
-POST http://localhost:5000/power HTTP/1.1
-content-type: application/json
-
-{
-    "power": "50"
-}
-
-###
-POST http://localhost:5000/humid HTTP/1.1
-content-type: application/json
-
-{
-    "top": "50",
-    "bottom": "25"
-}
-###
 POST http://localhost:5000/api/setting HTTP/1.1
 content-type: application/json
 
 {
-    "topic": "drv",
-    "setting": "50"
+    "setting": "100"
 }
 
-###
+### GET power from database
 
 GET  http://localhost:5000/api/setting HTTP/1.1
 content-type: application/json
 
-{
-    "topic": "drv",
-    "setting": "50"
-}
 ###
 POST http://localhost:5160/api/power HTTP/1.1
 content-type: application/json
@@ -54,6 +32,7 @@ GET http://localhost:5160/api/power HTTP/1.1
 ###
 POST http://localhost:5160/api/mode HTTP/1.1
 content-type: application/json
+
 
 {
     "mode": "auto"

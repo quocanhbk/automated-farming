@@ -100,7 +100,7 @@ const BoundForm = (props) => {
                 </LabelWrapper>
                 <ElementWrapper>
                     <button onClick={() => setUpper(upper - 1)} disabled={(upper <= 0) ? true : false}> - </button>
-                        <input type='text' className='upperBound' value={parseInt(upper)} onChange={(e) => setUpper(e.target.value)} />
+                    <input type='text' className='upperBound' value={parseInt(upper)} onChange={(e) => setUpper(parseInt(e.target.value))} />
                     <button onClick={() => setUpper(upper + 1)} disabled={(upper >= 100) ? true : false}> + </button>
                 </ElementWrapper>            
                 <LabelWrapper>
@@ -108,13 +108,13 @@ const BoundForm = (props) => {
                 </LabelWrapper>
                 <ElementWrapper>
                     <button onClick={() => setLower(lower - 1)} disabled={(lower <= 0) ? true : false}> - </button>
-                        <input type='text' className='lowerBound' value={parseInt(lower)} onChange={(e) => setLower(e.target.value)} />
+                    <input type='text' className='lowerBound' value={parseInt(lower)} onChange={(e) => setLower(parseInt(e.target.value))} />
                     <button onClick={() => setLower(lower + 1)} disabled={(lower >= 100) ? true : false}> + </button>
                 </ElementWrapper>
             </MainContent>
             <ButtonWrapper>
                 <Button type='submit'>   Lưu   </Button>
-                    <Button onClick={reset}>   Hủy </Button>
+                <Button onClick={reset}>   Hủy </Button>
             </ButtonWrapper>
         </Container>
         

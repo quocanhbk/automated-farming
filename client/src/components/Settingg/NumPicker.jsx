@@ -96,7 +96,7 @@ const NumPicker = (props) => {
                 </LabelWrapper>
                 <ElementWrapper>
                     <button onClick={() => setValue(value - 1)} disabled={(value <= 0) ? true : false}> - </button>
-                    <input type='text' value={parseInt(value)} onChange={(e) => setValue(e.target.value)} />
+                    <input type='text' value={parseInt(value)} onChange={(e) => setValue(parseInt(e.target.value))} />
                     <button onClick={() => setValue(value + 1)} disabled={(value>=100)? true : false}> + </button>
                 </ElementWrapper>
             </MainContent>
