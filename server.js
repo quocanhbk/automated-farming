@@ -30,26 +30,24 @@ adafruit.on('message', (topic, message) => {
 app.use('/api/setting', settingRouter)
 
 app.post('/api/setting', (req, res) => {
-    let feed = feedList.find(feed => feed.name == req.body.topic)
+    let feed = feedList.find(feed => feed.name == "drv")
     let setting = req.body.setting
     if (setting >= 0 && setting <= 100) {
         let message = {
-            "message": "success"
+            "setting": "Success!"
         }
         let topic = {
             id: "10",
             name: "DRV_PWM",
-            data: setting * 2.55,
+            data: Math.round(setting * 2.55),
             unit: ""
         }
-
         let upd_query = "UPDATE motor SET power = ? WHERE system_id = 101"
         conn.query(upd_query, [setting], function (err, result) {
             if (err) {
                 res.status(400).json({
                     error: err
                 })
-                throw err
             }
             else {
                 adafruit.publish(feed.link, topic)
@@ -68,19 +66,14 @@ app.get('/api/setting', (req, res) => {
     let str_query = "SELECT power FROM motor WHERE system_id = 101"
     conn.query(str_query, function (err, result) {
         if (err) {
-            res.status(400).json({error: err})
+            res.status(400).json({
+                error: err
+            })
         }
         else {
-            if (result.length == 0) {
-                res.status(400).json({
-                    error: "ERROR MESSAGE"
-                })
-            }
-            else {
-                res.status(200).json({
-                    setting: result[0].power
-                })
-            }
+            res.status(200).json({
+                setting: result[0].power
+            })
         }
     })
 })
@@ -138,28 +131,28 @@ app.post('/pub', (req, res) => {
     }
 })
 
-app.post('/api/power',(req,res) =>{
+app.post('/api/power', (req, res) => {
     let power = req.body.power
-    var num =  power == "on"?1:0
-        
-        let p = `UPDATE mainsystem SET sstatus = ${num} WHERE id = 101`;
-        conn.query(p,function(err, result) {
-            if (err) res.json({error: err})
-            else res.status(200).json({status: "success"})
-        })
-    
+    var num = power == "on" ? 1 : 0
+
+    let p = `UPDATE mainsystem SET sstatus = ${num} WHERE id = 101`;
+    conn.query(p, function (err, result) {
+        if (err) res.json({ error: err })
+        else res.status(200).json({ status: "success" })
+    })
+
 }
 )
 
-app.get('/api/power', (req, res) => { 
+app.get('/api/power', (req, res) => {
     let q = `SELECT sstatus FROM mainsystem WHERE id = 101`;
-    conn.query(q,function(err, result){
-         if (err) res.json({error: err})
-         else { 
-            let power = result[0]["sstatus"] == 1 ? "on":"off"
-            res.status(200).json({"power": power})
-         }
-     })
+    conn.query(q, function (err, result) {
+        if (err) res.json({ error: err })
+        else {
+            let power = result[0]["sstatus"] == 1 ? "on" : "off"
+            res.status(200).json({ "power": power })
+        }
+    })
 
 })
 
