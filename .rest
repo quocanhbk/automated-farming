@@ -20,7 +20,24 @@ content-type: application/json
 GET  http://localhost:5000/api/setting HTTP/1.1
 content-type: application/json
 
+### Sign up
+POST http://localhost:5000/api/auth/signup HTTP/1.1
+content-type: application/json
+
 {
-    
+    "username": "quocanhbk3",
+    "password": "123456"
 }
+
+### Login
+POST http://localhost:5000/api/auth/login HTTP/1.1
+content-type: application/json
+
+{
+    "username": "quocanhbk3",
+    "password": "123456"
+}
+
+### Logout
+GET http://localhost:5000/api/auth/logout HTTP/1.1
 

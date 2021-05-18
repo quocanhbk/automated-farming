@@ -1,15 +1,18 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const feedList = require('./feedList')
 require('dotenv').config()
 let {dbConn} = require('./connection')
-let settingRouter = require('./router/settingRouter')
-
+let settingRoute = require('./router/settingRoute')
+let authRoute = require('./router/authRoute')
+let {requireAuth} = require('./middlewares/authMiddleware')
 
 const app = express()
 app.use(express.json())
+app.use(cookieParser())
 
-
-app.use('/api/setting', settingRouter)
+app.use('/api/setting',requireAuth, settingRoute)
+app.use('/api/auth', authRoute)
 
 app.put('/humid', (req, res) => {
     let top = req.body.top;
