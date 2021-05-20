@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import Header from "../Header"
+import Redirector from "../Redirector"
 import BoundForm from "./BoundForm"
 
 const Container = styled.div`
@@ -19,20 +20,16 @@ const Body = styled.div`
     
 `
 
-
-
-
-
 const Humid = () => {
     return (
-        <Container>
-            <Header text={'Cập nhật ngưỡng'} />
-            <Body>
-                
-                <BoundForm upper='100' lower ='50' />
-                
-            </Body>
-        </Container>
+        <Redirector>
+            <Container>
+                <Header text={'Cập nhật ngưỡng'} />
+                <Body>
+                    <BoundForm upper='100' lower ='50' />
+                </Body>
+            </Container>
+        </Redirector>
     )
 }
 

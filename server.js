@@ -18,6 +18,10 @@ app.use('/api/mode', requireAuth, modeRoute)
 app.use('/api/power', requireAuth, powerRoute)
 app.use('/api/humid', requireAuth, humidRoute)
 
+app.get('/*', requireAuth, (req, res) => {
+    res.send("Oke")
+})
+
 // Handle input from IOT
 adafruit.on('message', (topic, message) => {
     let topicName = feedList.find(feed => feed.link === topic).name

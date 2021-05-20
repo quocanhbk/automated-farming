@@ -2,7 +2,7 @@ import styled from "styled-components"
 import Header from "../Header"
 import NumPicker from "./NumPicker"
 import React from 'react';
-
+import Redirector from '../Redirector'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -22,12 +22,14 @@ const Body = styled.div`
 
 const Settingg = () => { 
     return (
-        <Container>
-            <Header text={'Điều chỉnh công suất'}/>
-            <Body>
-                <NumPicker value='50' />
-            </Body>
-        </Container>
+        <Redirector>
+            <Container>
+                <Header text={'Điều chỉnh công suất'}/>
+                <Body>
+                    <NumPicker value='50' />
+                </Body>
+            </Container>
+        </Redirector>
     )
 }
 

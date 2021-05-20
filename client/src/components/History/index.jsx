@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTable } from 'react-table'
 import Header from "../Header"
-
+import Redirector from '../Redirector'
 
 const Container = styled.div`
     display: flex;
@@ -173,16 +173,18 @@ const History=()=> {
     ]
 
     return (
-        <Container>
-            <Header text={'Xem lịch sử tưới'} />
-            <Body>
-                
-                <Styles>
-                    <Table columns={columns} data={data} />
-                </Styles>
-                
-            </Body>
-        </Container>
+        <Redirector>
+            <Container>
+                <Header text={'Xem lịch sử tưới'} />
+                <Body>
+                    
+                    <Styles>
+                        <Table columns={columns} data={data} />
+                    </Styles>
+                    
+                </Body>
+            </Container>
+        </Redirector>
     )
 }
 

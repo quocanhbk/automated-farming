@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import Header from "../Header"
-
+import Redirector from '../Redirector'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -16,12 +16,15 @@ const Body = styled.div`
 
 const Mode = () => {
     return (
-        <Container>
-            <Header text={'Đổi chế độ tưới'}/>
-            <Body>
-                Đổi chế độ tưới
-            </Body>
-        </Container>
+        <Redirector>
+            <Container>
+                <Header text={'Đổi chế độ tưới'}/>
+                <Body>
+                    Đổi chế độ tưới
+                </Body>
+            </Container>
+        </Redirector>
+
     )
 }
 

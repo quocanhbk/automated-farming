@@ -2,6 +2,8 @@ import styled from "styled-components"
 import Header from "../Header"
 import Toggle from "../Toggle"
 import {Switch} from '@material-ui/core'
+import Redirector from "../Redirector"
+
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -21,16 +23,18 @@ const Body = styled.div`
 
 const Power = () => {
     return (
-        <Container>
-            <Header text={'Bật/tắt hệ thống'}/>
-            <Body>
-                <div>
-                    <Toggle />
-                    <Switch size="medium"/>
-                </div>
-                
-            </Body>
-        </Container>
+        <Redirector>
+            <Container>
+                <Header text={'Bật/tắt hệ thống'}/>
+                <Body>
+                    <div>
+                        <Toggle />
+                        <Switch size="medium"/>
+                    </div>
+                    
+                </Body>
+            </Container>
+        </Redirector>
     )
 }
 
