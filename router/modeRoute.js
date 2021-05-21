@@ -1,20 +1,38 @@
-var express = require('express')
-var router = express.Router();
+let express = require('express')
+let router = express.Router();
 const {dbConn} = require('../connection')
 
 router.post('/',(req,res) =>{
-    let mode = req.body.mode
-    var num =  mode == "auto"?1:0
-        
-        let p = `UPDATE mainsystem SET smode = ${num} WHERE id = 101`;
-        dbConn.query(p,function(err, result) {
+    let m = `SELECT smode FROM mainsystem WHERE id = 101`;
+    dbConn.query(m,function(err,result1){
+        if(err) res.json({error: err})
+        else{
+            let mode = result1[0]["smode"]
+            let p = `UPDATE mainsystem SET smode = ${!mode} WHERE id = 101`;
+            dbConn.query(p,function(err, result2) {
             if (err) res.json({error: err})
-            else res.status(200).json({status: "success"})
-        
-        })
-    
-}
-)
+            else{
+                let num = mode == 1?"manual":"auto"
+                res.status(200).json({"mode": num})
+                }
+            })
+        }
+    })
+}) 
+        //let p1 = `UPDATE mainsystem SET smode = ${num} WHERE id = 101`;
+        //let p2 = `SELECT smode FROM mainsystem WHERE id = 101`;
+        //dbConn.query(p1,function(err, result) {
+        //    if (err) res.json({error: err})
+       //})
+        //dbConn.query(p2,function(err, result){
+        //    if (err) res.json({error: err})
+        //    else { 
+        //      let mode = result[0]["smode"] == 1 ? "auto":"manual";
+        //      res.status(200).json({"mode": mode})
+        //    }
+        //})
+//}
+//)
 
 router.get('/', (req, res) => { 
     let m = `SELECT smode FROM mainsystem WHERE id = 101`;
