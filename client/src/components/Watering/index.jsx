@@ -96,7 +96,12 @@ const Watering = () => {
     const [duration, setDuration] = useState(0);
     const [timeLeft, setTimeLeft] = useState(duration);    
     const [progess, setProgess] = useState(0);
-    
+    const handleStop = (e) => {
+        setDuration(timeLeft);
+        let data = { duration: duration };
+        //await axios.post('url',data)
+        window.location.reload();
+    }
     useEffect(() => {
         
         if (timeLeft < 0) {   
@@ -138,7 +143,7 @@ const Watering = () => {
                             <ProgessBar>                            
                                 <Progess x={progess}><h2>{timeLeft}</h2></Progess>                            
                             </ProgessBar>
-                            <Button onClick={() => window.location.reload()} > Ngừng   </Button>
+                            <Button onClick={handleStop} > Ngừng   </Button>
                         </Wrapper>
                     }
                 </Body>

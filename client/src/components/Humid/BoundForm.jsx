@@ -17,7 +17,6 @@ const MainContent = styled.div`
     flex-direction: column;    
     border-radius: 0.3rem;
     gap: 0.5rem;
-
     
 `
 
@@ -42,7 +41,6 @@ const LabelWrapper = styled.div`
     background: ${props => props.theme.color.background.secondary};
     color: ${props => props.theme.color.fill.primary};
     font-weight: 700;
-
 `
 const ElementWrapper = styled.div`
     
@@ -91,11 +89,11 @@ const BoundForm = (props) => {
         setUpper(parseInt(props.upper));
         setLower(parseInt(props.lower));
     }
-    
+
     return (
-        
+
         <Container >
-            
+
             <MainContent>
                 <LabelWrapper>
                     <label>Ngưỡng trên</label>
@@ -104,7 +102,7 @@ const BoundForm = (props) => {
                     <button onClick={() => setUpper(upper - 1)} disabled={(upper <= 0) ? true : false}> - </button>
                     <input type='text' className='upperBound' value={parseInt(upper)} onChange={(e) => setUpper(parseInt(e.target.value))} />
                     <button onClick={() => setUpper(upper + 1)} disabled={(upper >= 100) ? true : false}> + </button>
-                </ElementWrapper>            
+                </ElementWrapper>
                 <LabelWrapper>
                     <label>Ngưỡng dưới</label>
                 </LabelWrapper>
@@ -120,7 +118,7 @@ const BoundForm = (props) => {
             </ButtonWrapper>
 
         </Container>
-        
+
     );
 }
 export default BoundForm

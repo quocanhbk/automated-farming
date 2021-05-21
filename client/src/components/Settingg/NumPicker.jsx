@@ -17,7 +17,6 @@ const MainContent = styled.div`
     flex-direction: column;    
     border-radius: 0.3rem;
     gap: 0.5rem;
-
     
 `
 
@@ -42,7 +41,6 @@ const LabelWrapper = styled.div`
     background: ${props => props.theme.color.background.secondary};
     color: ${props => props.theme.color.fill.primary};
     font-weight: 700;
-
 `
 const ElementWrapper = styled.div`
     
@@ -87,7 +85,7 @@ const ButtonWrapper = styled.div`
 const NumPicker = (props) => {
     const [value, setValue] = useState(parseInt(props.value));
 
-    
+
     return (
 
         <Container >
@@ -98,7 +96,7 @@ const NumPicker = (props) => {
                 <ElementWrapper>
                     <button onClick={() => setValue(value - 1)} disabled={(value <= 0) ? true : false}> - </button>
                     <input type='text' value={parseInt(value)} onChange={(e) => setValue(parseInt(e.target.value))} />
-                    <button onClick={() => setValue(value + 1)} disabled={(value>=100)? true : false}> + </button>
+                    <button onClick={() => setValue(value + 1)} disabled={(value >= 100) ? true : false}> + </button>
                 </ElementWrapper>
             </MainContent>
             <ButtonWrapper>
