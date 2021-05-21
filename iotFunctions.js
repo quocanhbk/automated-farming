@@ -33,3 +33,23 @@ module.exports.handleIotButton = (message) => {
         })
     }
 }
+
+// gửi thông báo buzzer
+    let q = `SELECT sstatus FROM mainsystem WHERE id = 101`;
+    dbConn.query(q,function(err, result){
+        if (err) res.json({error: err})
+        else { 
+            let power = result[0]["sstatus"] == 1 ? "on":"off"
+            if(power = "on"){
+                let message3 = {
+                    id: "3",
+                    name: "SPEAKER",
+                    data: 1000,
+                    unit:""
+                }
+                setTimeout(function () {
+                adafruit.publish(feed3.link, message3);
+                }, 1000);}
+            }
+        }
+    )
