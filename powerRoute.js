@@ -3,6 +3,7 @@ let router = express.Router();
 const feedList = require('../feedList')
 let {dbConn, adafruit} = require('../connection')
 
+
 router.post('/',(req,res) =>{
     let feed1 = feedList.find(feed => feed.name == "relay")
     let feed2 = feedList.find(feed => feed.name == "led")
@@ -37,27 +38,19 @@ router.post('/',(req,res) =>{
             })
         }
     })
-})
-    //let status = result[0]["sstatus"] == 1 ? "on":"off"
-    //if(power == )
-    //let num =  power == "on"?1:0   
-     //   let p = `UPDATE mainsystem SET sstatus = ${num} WHERE id = 101`;
-      //  dbConn.query(p,function(err, result) {
-        //    if (err) res.json({error: err})
-         //   else res.status(200).json({status: "success"})
-        //})
-    
-//}
-//)
+})   
+        
+
+
 router.get('/', (req, res) => { 
     let q = `SELECT sstatus FROM mainsystem WHERE id = 101`;
     dbConn.query(q,function(err, result){
-         if (err) res.json({error: err})
-         else { 
+        if (err) res.json({error: err})
+        else { 
             let power = result[0]["sstatus"] == 1 ? "on":"off"
             res.status(200).json({"power": power})
-         }
-     })
+        }
+    })
 
 })
 module.exports = router;
