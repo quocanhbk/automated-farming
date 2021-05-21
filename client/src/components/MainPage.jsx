@@ -7,13 +7,11 @@ import Mode from './Mode'
 import Power from './Power'
 import Watering from './Watering'
 import Settingg from './Settingg'
-import Login from "./Login"
 
 
 const Container = styled.div`
     width: 24rem;
     background: ${props => props.theme.color.background.primary};
-    border: 1px solid white;
     height: 100%;
 
     & .router-div {
@@ -26,13 +24,12 @@ const MainPage = () => {
         <Container>
             <Router className="router-div">
                 <Dashboard path="/" />
-                <History path="/history" />
-                <Humid path="/humid" />
+                <History path="/history"/>
+                <Humid path="humid"/>
                 <Mode path="/mode" />
                 <Power path="/power" />
                 <Watering path="/manual-watering" />
                 <Settingg path="/setting" />
-                <Login path="/login" />
             </Router>
         </Container>
     )

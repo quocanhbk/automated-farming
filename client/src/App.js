@@ -2,7 +2,8 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import MainPage from './components/MainPage';
 import theme from './utils/theme';
-import Context from './Context';
+import { StoreProvider, useStoreState } from 'easy-peasy';
+import store from './store';
 
 const StyledApp = styled.div`
   background: ${(props) => props.theme.color.background.secondary};
@@ -15,21 +16,22 @@ const StyledApp = styled.div`
   font-size: 1rem;
 `;
 const Container = () => {
-  const {themeContext} = Context.useContainer()
+  let isDark = useStoreState(state => state.isDark)
   
   return (
-    <ThemeProvider theme={themeContext.isDark ? theme.dark : theme.light}>
+    <ThemeProvider theme={isDark ? theme.dark : theme.light}>
         <StyledApp>
             <MainPage/>
         </StyledApp>
     </ThemeProvider>
   );
 };
-function App() {
+
+const App = () => {
   return (
-    <Context.Provider>
+    <StoreProvider store={store}>
       <Container />
-    </Context.Provider>
+    </StoreProvider>
   );
 }
 

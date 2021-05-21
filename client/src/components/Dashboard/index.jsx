@@ -3,8 +3,8 @@ import Header from "./Header"
 import PowerTag from "./PowerTag"
 import HumidChart from './HumidChart'
 import ButtonGroup from './ButtonGroup'
-import axios from "axios"
-import { useState, useEffect } from 'react'
+import { useStoreState } from "easy-peasy"
+import Login from '../Login'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -19,25 +19,13 @@ const Body = styled.div`
 `
 
 const Dashboard = () => {
-    const [status, setStatus] = useState(true);    
-    
-    async function getStatus() {
-        await axios("/api/power")
-            .then((response) => {
-                setStatus(response.data.power);
-            })
-            .catch((error) => {
-                console.error("Error fetching power: ", error);
-            });
-    }
-    useEffect(() => {
-        getStatus()
-    }, []); 
+    let username = useStoreState(state => state.username)
     return (
+        username === null ? <Login/> :
         <Container>
             <Header/>
             <Body>
-                <PowerTag status={status} />
+                <PowerTag status="on"/>
                 <HumidChart/>
                 <ButtonGroup/>
             </Body>
