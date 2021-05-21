@@ -31,36 +31,36 @@ const Text = styled.div`
     background: ${props => getFader(props.mode === true ? props.theme.color.fill.success : props.mode === false ? props.theme.color.fill.danger : props.theme.color.fill.warning, 0.1)};
     color: ${props => props.mode === true ? props.theme.color.fill.success : props.mode === false ? props.theme.color.fill.danger : props.theme.color.fill.warning};
     & p {
-        margin: 0 auto;
-       
+        margin: 0 auto;       
         text-align:center;
     }
 `
 
 const Mode = () => {
     const [checked, setChecked] = useState(true);
-
+    
     const handleChange = nextChecked => {
         setChecked(nextChecked);
-        postData()
+        postData();
     };
     
     async function postData() {
-        let mode = checked ? "auto" : "handle";
-        let data = { mode: mode }//;
-        await axios.post("/api/mode", data);
+        let mode = checked ? "auto" : "manual";
+        let data = { mode: mode };
+        let res = await axios.post('/api/mode', data);
+        console.log(res.data);
     }
-    async function getData() {
-        await axios("/api/mode")
-            .then((response) => {
-                setChecked(response.data.mode);
-            })
-            .catch((error) => {
-                console.error("Error fetching data: ", error);
-            });
+    async function getData() {        
+        try {
+            const res = await axios("/api/mode");
+            console.log(res.data);
+            res.data.mode === "auto" ? setChecked(true) : setChecked(false)
+        } catch (error) {
+            console.error(error);
+        }                    
     }
     useEffect(() => {
-        getData()
+        getData();
     }, []);
     return (
         <Container>

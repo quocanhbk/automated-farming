@@ -21,37 +21,38 @@ const Body = styled.div`
 `
 
 const Humid = () => {
-    let [top, setTop] = useState(100);
-    let [bottom, setBottom] = useState(50);
-    const submitHumid = (upper, lower) => {
-        setTop(upper)
-        setBottom(lower)
-        postData();
+    const [top, setTop] = useState(100);
+    const [bottom, setBottom] = useState(50);
+    const submitHumid = (e, upper, lower) => {
+        e.preventDefault();
+        setTop(upper);
+        setBottom(lower);
+        postData(upper, lower);
     }
-    async function postData() {
-        let data = { top: top, bottom: bottom }
-        await axios.post("/api/humid", data);
+    async function postData(upper, lower) {
+        let data = { top: upper, bottom: lower }
+        const res = await axios.post("/api/humid", data);
+        console.log(res.data);        
     }
     async function getData() {
-        await axios("/api/humid")
-            .then((response) => {
-                setTop(response.data.top);
-                setBottom(response.data.bottom);
-            })
-            .catch((error) => {
-                console.error("Error fetching data: ", error);
-            });
+        try {
+            const res = await axios.get("/api/humid");
+            setTop(res.data.top);
+            setBottom(res.data.bottom);
+            console.log(res.data);
+        }
+        catch(error) {
+            console.error("Error fetching data: ", error);
+        }            
     }
     useEffect(() => {
-        getData()
+        getData();
     }, []);
     return (
         <Container>
             <Header text={'Cập nhật ngưỡng'} />
             <Body>
-
                 <BoundForm upper={top} lower={bottom} submit={submitHumid} />
-
             </Body>
         </Container>
     )
