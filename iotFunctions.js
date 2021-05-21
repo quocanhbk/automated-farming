@@ -53,3 +53,44 @@ module.exports.handleIotButton = (message) => {
             }
         }
     )
+
+    //kiểm tra độ ẩm
+    module.exports = function checkHumid(message) {
+        let feed = feedList.find(feed => feed.name == "drv")
+        humid = Number(message.data)
+        
+        let q1 = `SELECT upper_bound, lower_bound FROM farm.sensor WHERE id = '101'`
+        dbConn.query(q1, [true], function (err, result) {
+            if (err) throw err;
+            let top = result[0].upper_bound
+            let bottom = result[0].lower_bound
+            if (top && bottom) {
+                if (humid < bottom) {
+                    var mess = {
+                        id: "10",
+                        name: "DRV_PWM",
+                        data: 100 * 2.55,
+                        unit:""
+                    } 
+                }
+                else {
+                    var mess = {
+                        id: "10",
+                        name: "DRV_PWM",
+                        data: 0,
+                        unit:""
+                    }
+                }
+            } else return res.status(400).send({ error: "Missing top or bottom value" })
+            
+            let q2 = `SELECT sstatus FROM farm.mainsystem WHERE id = '101'`
+            dbConn.query(q2,function(err,result1){
+                if (err) res.json({error: err})
+                let power = result[0].sstatus
+                if (power == 1) { 
+                    adafruit.publish(feed.link, mess)
+                } else console.log("Power is off")
+            })
+        });      
+    }
+    

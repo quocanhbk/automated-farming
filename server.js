@@ -6,7 +6,7 @@ require('dotenv').config()
 let {adafruit} = require('./connection')
 let {requireAuth} = require('./middlewares/authMiddleware')
 let {settingRoute, modeRoute, powerRoute, authRoute, humidRoute} = require('./router')
-let {handleIotButton} = require('./iotFunctions')
+let {handleIotButton, checkHumid} = require('./iotFunctions')
 
 const app = express()
 app.use(express.json())
@@ -27,6 +27,8 @@ adafruit.on('message', (topic, message) => {
     let topicName = feedList.find(feed => feed.link === topic).name
     if (topicName === 'button') {
         handleIotButton(message.toString())
+    } else if (topicName === 'humid-sensor') {
+        checkHumid(message.toString())
     }
 })
 
