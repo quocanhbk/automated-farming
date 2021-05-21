@@ -91,9 +91,11 @@ const BoundForm = (props) => {
         setUpper(parseInt(props.upper));
         setLower(parseInt(props.lower));
     }
+    
     return (
         
         <Container >
+            
             <MainContent>
                 <LabelWrapper>
                     <label>Ngưỡng trên</label>
@@ -113,9 +115,10 @@ const BoundForm = (props) => {
                 </ElementWrapper>
             </MainContent>
             <ButtonWrapper>
-                <Button type='submit'>   Lưu   </Button>
+                <Button onClick={props.submit(upper, lower)}>   Lưu   </Button>
                 <Button onClick={reset}>   Hủy </Button>
             </ButtonWrapper>
+
         </Container>
         
     );

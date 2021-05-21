@@ -86,6 +86,7 @@ const ButtonWrapper = styled.div`
 `
 const NumPicker = (props) => {
     const [value, setValue] = useState(parseInt(props.value));
+
     
     return (
 
@@ -101,7 +102,7 @@ const NumPicker = (props) => {
                 </ElementWrapper>
             </MainContent>
             <ButtonWrapper>
-                <Button type='submit'>   Lưu   </Button>
+                <Button onClick={props.submit(value)}>   Lưu   </Button>
                 <Button onClick={() => setValue(parseInt(props.value))}>   Hủy </Button>
             </ButtonWrapper>
         </Container>

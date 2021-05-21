@@ -1,8 +1,9 @@
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import Header from "../Header"
 import NumPicker from "./NumPicker"
 import React from 'react';
-
+import axios from 'axios'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -20,12 +21,35 @@ const Body = styled.div`
     
 `
 
-const Settingg = () => { 
+const Settingg = () => {
+    let [setting, setSetting] = useState(50);
+    const submitSetting = (value) => {
+        setSetting(value);
+        postData();
+         
+    }
+    async function postData() {
+        let data = { setting: setting }
+        await axios.post("/api/setting", data);        
+    }
+    async function getData() {
+        await axios("/api/setting")
+            .then((response) => {
+                setSetting(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching data: ", error);
+            });
+    }
+    useEffect(() => {
+        getData()
+    }, []); 
+    
     return (
         <Container>
             <Header text={'Điều chỉnh công suất'}/>
             <Body>
-                <NumPicker value='50' />
+                <NumPicker value={setting} submit={submitSetting} />
             </Body>
         </Container>
     )
