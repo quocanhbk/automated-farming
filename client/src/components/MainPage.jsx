@@ -9,6 +9,7 @@ import Watering from './Watering'
 import Settingg from './Settingg'
 import Login from "./Login"
 
+
 const Container = styled.div`
     width: 24rem;
     background: ${props => props.theme.color.background.primary};
@@ -20,7 +21,7 @@ const Container = styled.div`
     }
 `
 
-const MainPage = () => {
+const MainPage = () => {    
     return (
         <Container>
             <Router className="router-div">
