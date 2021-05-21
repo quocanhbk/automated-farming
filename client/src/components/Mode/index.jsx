@@ -4,7 +4,9 @@ import Switch from "react-switch"
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { getFader } from '../../utils/color'
+import Redirector from '../Redirector'
 const Container = styled.div`
+
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -60,6 +62,7 @@ const Mode = () => {
         getData()
     }, []);
     return (
+        < Redirector >
         <Container>
             <Header text={'Đổi chế độ tưới'} />
             <Body>
@@ -70,7 +73,8 @@ const Mode = () => {
                     className="react-switch"
                 />
             </Body>
-        </Container>
+            </Container>
+        </Redirector >
     )
 }
 

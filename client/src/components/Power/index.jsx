@@ -4,6 +4,7 @@ import Switch from "react-switch"
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { getFader } from '../../utils/color'
+import Redirector from '../Redirector'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -59,6 +60,7 @@ const Power = () => {
         getData()
     }, []);
     return (
+        <Redirector >
         <Container>
             <Header text={'Bật/tắt hệ thống'} />
             <Body>
@@ -70,6 +72,7 @@ const Power = () => {
                 />
             </Body>
         </Container>
+        </Redirector >
     )
 }
 

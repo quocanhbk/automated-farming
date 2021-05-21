@@ -7,8 +7,8 @@ const Container = styled.div`
     gap: 0.5rem;
     padding: 0.5rem 1rem    ;
     border-radius: 0.5rem;
-    background: ${props => getFader(props.status === true ? props.theme.color.fill.success : props.status === false ? props.theme.color.fill.danger : props.theme.color.fill.warning, 0.1)};
-    color: ${props => props.status === true ? props.theme.color.fill.success : props.status === false ? props.theme.color.fill.danger : props.theme.color.fill.warning};
+    background: ${props => getFader(props.status === "on" ? props.theme.color.fill.success : props.status === "off" ? props.theme.color.fill.danger : props.theme.color.fill.warning, 0.1)};
+    color: ${props => props.status === "on" ? props.theme.color.fill.success : props.status === "off" ? props.theme.color.fill.danger : props.theme.color.fill.warning};
 
     & p {
         margin-bottom: 0.1rem;
@@ -16,7 +16,7 @@ const Container = styled.div`
 `
 const Led = styled.div`
     border-radius: 99px;
-    background: ${props => props.status === true ? props.theme.color.fill.success : props.status === false ? props.theme.color.fill.danger : props.theme.color.fill.warning};
+    background: ${props => props.status === "on" ? props.theme.color.fill.success : props.status === "off" ? props.theme.color.fill.danger : props.theme.color.fill.warning};
     width: 12px;
     height: 12px;
 `
@@ -24,9 +24,9 @@ const Led = styled.div`
 const PowerTag = ({status}) => {
     const genText = () => {
         switch (status) {
-            case true:
+            case "on":
                 return 'Hệ thống đang bật'
-            case false:
+            case "off":
                 return 'Hệ thống đang tắt'
             default:
                 return 'Không xác định'
