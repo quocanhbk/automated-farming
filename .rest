@@ -34,9 +34,7 @@ POST http://localhost:5000/api/auth/login HTTP/1.1
 content-type: application/json
 
 {
-    "username": "huan12",
-    "password": "1234567"
+    "username": "huan",
+    "password": "123"
 }
-###
-GET http://localhost:5000/api/mode HTTP/1.1
 ###
