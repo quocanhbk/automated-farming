@@ -2,7 +2,7 @@ import styled from "styled-components"
 import Header from "../Header"
 import React, { useState, useEffect } from 'react';
 import { getFader } from "../../utils/color";
-
+import Redirector from '../Redirector'
 
 
 const Container = styled.div`
@@ -67,7 +67,7 @@ const Button = styled.button`
 const ProgessBar = styled.div`
     border-radius: 0.2rem;    
     display:flex;
-    heigh:100%;
+    height:100%;
     width: 100%;    
     justify-content: center;  
     flex-direction:row;
@@ -79,9 +79,9 @@ const Progess = styled.div`
     border-radius: 0.5rem;
     outline: none;    
     padding: 0.45em;
-    transition: border 0.15s ease-in-out;    s    
+    transition: border 0.15s ease-in-out;
     flex-direction: row;
-    heigh:100%;
+    height:100%;
     width: ${props => props.x*100}%;
     max-width: 100%;    
     justify-content: center;     
@@ -96,11 +96,16 @@ const Watering = () => {
     const [duration, setDuration] = useState(0);
     const [timeLeft, setTimeLeft] = useState(duration);    
     const [progess, setProgess] = useState(0);
-    
+    const handleStop = (e) => {
+        setDuration(timeLeft);
+        let data = { duration: duration };
+        //await axios.post('url',data)
+        window.location.reload();
+    }
     useEffect(() => {
         
         if (timeLeft < 0) {   
-            
+
             setComplete(true);
             return;
         }
@@ -114,34 +119,36 @@ const Watering = () => {
     }, [ timeLeft, progess, duration ]);
 
     return (
-        <Container>
-            <Header text={'Tưới cây thủ công'} />
-            <Body>
-                {complete ?
-                    <Wrapper>
-                        <input type='text' name = 'Bat dau' onChange={(e) => setDuration(parseInt(e.target.value))}  placeholder="Nhập thời gian tưới..." />
-                        <Button onClick={(e) => {
-                            if (duration !== 0) {
-                                setTimeLeft(duration);
-                                setProgess(0);
-                                setComplete(false);
-                            } else {
-                                window.location.reload()
-                            }                            
-                        }} >
-                            Bắt đầu
-                        </Button>
-                    </Wrapper>
-                    :
-                    <Wrapper>
-                        <ProgessBar>                            
-                            <Progess x={progess}><h2>{timeLeft}</h2></Progess>                            
-                        </ProgessBar>
-                        <Button onClick={() => window.location.reload()} > Ngừng   </Button>
-                    </Wrapper>
-                }
-            </Body>
-        </Container>
+        <Redirector>
+            <Container>
+                <Header text={'Tưới cây thủ công'} />
+                <Body>
+                    {complete ?
+                        <Wrapper>
+                            <input type='text' name = 'Bat dau' onChange={(e) => setDuration(parseInt(e.target.value))}  placeholder="Nhập thời gian tưới..." />
+                            <Button onClick={(e) => {
+                                if (duration !== 0) {
+                                    setTimeLeft(duration);
+                                    setProgess(0);
+                                    setComplete(false);
+                                } else {
+                                    window.location.reload()
+                                }                            
+                            }} >
+                                Bắt đầu
+                            </Button>
+                        </Wrapper>
+                        :
+                        <Wrapper>
+                            <ProgessBar>                            
+                                <Progess x={progess}><h2>{timeLeft}</h2></Progess>                            
+                            </ProgessBar>
+                            <Button onClick={handleStop} > Ngừng   </Button>
+                        </Wrapper>
+                    }
+                </Body>
+            </Container>
+        </Redirector>
     )
 }
 

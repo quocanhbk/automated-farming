@@ -24,9 +24,9 @@ const Led = styled.div`
 const PowerTag = ({status}) => {
     const genText = () => {
         switch (status) {
-            case 'on':
+            case "on":
                 return 'Hệ thống đang bật'
-            case 'off':
+            case "off":
                 return 'Hệ thống đang tắt'
             default:
                 return 'Không xác định'

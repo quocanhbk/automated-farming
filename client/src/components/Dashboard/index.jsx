@@ -3,7 +3,8 @@ import Header from "./Header"
 import PowerTag from "./PowerTag"
 import HumidChart from './HumidChart'
 import ButtonGroup from './ButtonGroup'
-
+import { useStoreState } from "easy-peasy"
+import Login from '../Login'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -18,7 +19,9 @@ const Body = styled.div`
 `
 
 const Dashboard = () => {
+    let username = useStoreState(state => state.username)
     return (
+        username === null ? <Login/> :
         <Container>
             <Header/>
             <Body>
