@@ -6,7 +6,7 @@ const store = createStore(
         setUsername: action((state, payload) => {
             state.username = payload
         }),
-        isDark: true,
+        isDark: false,
         toggleTheme: action((state) => {
             state.isDark = !state.isDark
         })
