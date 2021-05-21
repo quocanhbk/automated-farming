@@ -4,7 +4,6 @@ import Switch from "react-switch"
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { getFader } from '../../utils/color'
-import Redirector from '../Redirector'
 const Container = styled.div`
 
     display: flex;
@@ -40,10 +39,12 @@ const Text = styled.div`
 
 const Mode = () => {
     const [checked, setChecked] = useState(true);
+
     const handleChange = nextChecked => {
         setChecked(nextChecked);
         postData()
     };
+    
     async function postData() {
         let mode = checked ? "auto" : "handle";
         let data = { mode: mode }//;
@@ -62,7 +63,6 @@ const Mode = () => {
         getData()
     }, []);
     return (
-        < Redirector >
         <Container>
             <Header text={'Đổi chế độ tưới'} />
             <Body>
@@ -74,7 +74,6 @@ const Mode = () => {
                 />
             </Body>
             </Container>
-        </Redirector >
     )
 }
 

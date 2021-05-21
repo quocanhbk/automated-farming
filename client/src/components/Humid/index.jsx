@@ -3,7 +3,6 @@ import styled from "styled-components"
 import Header from "../Header"
 import BoundForm from "./BoundForm"
 import axios from 'axios'
-import Redirector from '../Redirector'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -20,10 +19,6 @@ const Body = styled.div`
     gap: 1rem;
     
 `
-
-
-
-
 
 const Humid = () => {
     let [top, setTop] = useState(100);
@@ -51,7 +46,6 @@ const Humid = () => {
         getData()
     }, []);
     return (
-        <Redirector >
         <Container>
             <Header text={'Cập nhật ngưỡng'} />
             <Body>
@@ -59,8 +53,7 @@ const Humid = () => {
                 <BoundForm upper={top} lower={bottom} submit={submitHumid} />
 
             </Body>
-            </Container>
-        </Redirector >
+        </Container>
     )
 }
 
