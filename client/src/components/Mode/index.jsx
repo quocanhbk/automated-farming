@@ -45,8 +45,8 @@ const Mode = () => {
         postData()
     };
     async function postData() {
-        let mode = checked?"auto":"handle"
-        let data = { mode: mode }//
+        let mode = checked ? "auto" : "handle";
+        let data = { mode: mode }//;
         await axios.post("/api/mode", data);
     }
     async function getData() {
