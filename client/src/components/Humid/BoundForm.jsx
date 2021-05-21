@@ -91,7 +91,7 @@ const BoundForm = (props) => {
     }
 
     return (
-        <Redirector >
+        
         <Container >
 
             <MainContent>
@@ -118,7 +118,7 @@ const BoundForm = (props) => {
             </ButtonWrapper>
 
             </Container>
-        </Redirector >
+        
 
     );
 }

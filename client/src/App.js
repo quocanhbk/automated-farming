@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import MainPage from './components/MainPage';
 import theme from './utils/theme';
-import { StoreProvider, useStoreState } from 'easy-peasy';
+import { StoreProvider, useStoreActions, useStoreState } from 'easy-peasy';
 import store from './store';
 
 const StyledApp = styled.div`
@@ -17,7 +17,10 @@ const StyledApp = styled.div`
 `;
 const Container = () => {
   let isDark = useStoreState(state => state.isDark)
-  
+  let getUsername = useStoreActions(state => state.getUsername)
+  useEffect(() => {
+    getUsername()
+  })
   return (
     <ThemeProvider theme={isDark ? theme.dark : theme.light}>
         <StyledApp>

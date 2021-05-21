@@ -4,7 +4,6 @@ import Header from "../Header"
 import NumPicker from "./NumPicker"
 import React from 'react';
 import axios from 'axios'
-import Redirector from '../Redirector'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -47,14 +46,12 @@ const Settingg = () => {
     }, []);
 
     return (
-        <Redirector >
         <Container>
             <Header text={'Điều chỉnh công suất'} />
             <Body>
                 <NumPicker value={setting} submit={submitSetting} />
             </Body>
-            </Container>
-        </Redirector >
+        </Container>
     )
 }
 

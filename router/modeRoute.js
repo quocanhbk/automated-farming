@@ -1,6 +1,6 @@
 let express = require('express')
 let router = express.Router();
-const {dbConn} = require('./connection')
+const {dbConn} = require('../connection')
 
 
 router.post('/',(req,res) =>{

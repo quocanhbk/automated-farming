@@ -9,6 +9,24 @@ const createToken = (string) => {
     return jwt.sign({string}, process.env.SECRET_KEY, {expiresIn: maxAge})
 }
 
+router.get('/', (req, res) => {
+    const token = req.cookies.farmtoken
+
+    if (token) {
+        jwt.verify(token, process.env.SECRET_KEY, async (err, data) => {
+            if (err) {
+                res.json({error: err})
+            }
+            else {
+                res.json({username: data.string})
+            }
+        })
+    }
+    else {
+        res.json({error: err})
+    }
+})
+
 router.post('/login', (req, res) => {
     let {username, password} = req.body
     dbConn.query(`SELECT * FROM users WHERE username = "${username}"`, (err, result) => {

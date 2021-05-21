@@ -1,7 +1,7 @@
 let express = require('express')
 let router = express.Router();
-const feedList = require('./feedList')
-let {dbConn, adafruit} = require('./connection')
+const feedList = require('../feedList')
+let {dbConn, adafruit} = require('../connection')
 
 
 router.post('/',(req,res) =>{

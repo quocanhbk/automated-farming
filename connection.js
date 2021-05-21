@@ -29,4 +29,6 @@ adafruit.on('connect', () => {
     })
 })
 
+
+// adafruit.publish('quocanhbk17/feeds/relay', {})
 module.exports = {dbConn, adafruit}
