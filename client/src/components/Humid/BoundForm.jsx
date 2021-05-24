@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { getFader } from "../../utils/color"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -83,12 +83,18 @@ const ButtonWrapper = styled.div`
     justify-content: space-between;
 `
 const BoundForm = (props) => {
-    const [upper, setUpper] = useState(parseInt(props.upper));
-    const [lower, setLower] = useState(parseInt(props.lower));
-    const reset = () => {
-        setUpper(parseInt(props.upper));
-        setLower(parseInt(props.lower));
+    
+    const [upper, setUpper] = useState(props.upper);
+    const [lower, setLower] = useState(props.lower);
+   
+    const reset = () => {        
+        setUpper(props.upper);
+        setLower(props.lower);
     }
+    useEffect(() => {
+        setUpper(props.upper);
+        setLower(props.lower);
+    }, [props.upper, props.lower]);
 
     return (
         
@@ -100,7 +106,7 @@ const BoundForm = (props) => {
                 </LabelWrapper>
                 <ElementWrapper>
                     <button onClick={() => setUpper(upper - 1)} disabled={(upper <= 0) ? true : false}> - </button>
-                    <input type='text' className='upperBound' value={parseInt(upper)} onChange={(e) => setUpper(parseInt(e.target.value))} />
+                    <input type='text' className='upperBound' value={upper} onChange={(e) => setUpper(parseInt(e.target.value))} />
                     <button onClick={() => setUpper(upper + 1)} disabled={(upper >= 100) ? true : false}> + </button>
                 </ElementWrapper>
                 <LabelWrapper>
@@ -108,12 +114,12 @@ const BoundForm = (props) => {
                 </LabelWrapper>
                 <ElementWrapper>
                     <button onClick={() => setLower(lower - 1)} disabled={(lower <= 0) ? true : false}> - </button>
-                    <input type='text' className='lowerBound' value={parseInt(lower)} onChange={(e) => setLower(parseInt(e.target.value))} />
+                    <input type='text' className='lowerBound' value={lower} onChange={(e) => setLower(parseInt(e.target.value))} />
                     <button onClick={() => setLower(lower + 1)} disabled={(lower >= 100) ? true : false}> + </button>
                 </ElementWrapper>
             </MainContent>
             <ButtonWrapper>
-                <Button onClick={props.submit(upper, lower)}>   Lưu   </Button>
+                <Button onClick={(e) => props.submit(e,upper, lower)}>   Lưu   </Button>
                 <Button onClick={reset}>   Hủy </Button>
             </ButtonWrapper>
 

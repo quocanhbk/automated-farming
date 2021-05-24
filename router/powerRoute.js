@@ -7,8 +7,7 @@ let {dbConn, adafruit} = require('../connection')
 router.post('/',(req,res) =>{
     let feed1 = feedList.find(feed => feed.name == "relay")
     let feed2 = feedList.find(feed => feed.name == "led")
-    console.log(feed1)
-    console.log(feed2)
+    let feed3 = feedList.find(feed => feed.name == "buzzer")
     let a1 = `SELECT sstatus FROM mainsystem WHERE id = 101`
     dbConn.query(a1,function(err,result1){
         if(err) res.json({error: err})
@@ -31,8 +30,10 @@ router.post('/',(req,res) =>{
                     data:!status,
                     unit:""
                 }
+                
                 adafruit.publish(feed1.link, message1)
                 adafruit.publish(feed2.link, message2)
+                
                 res.status(200).json({"status": num})
                 }
             })

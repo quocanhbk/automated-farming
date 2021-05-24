@@ -7,14 +7,15 @@ module.exports.requireAuth = (req, res, next) => {
     if (token) {
         jwt.verify(token, process.env.SECRET_KEY, async (err, data) => {
             if (err) {
-                res.send("Not authorized")
+                res.redirect('/')
             }
             else {
+                console.log(data.string)
                 next()
             }
         })
     }
     else {
-        res.send("Not authorized")
+        res.redirect('/')
     }
 }

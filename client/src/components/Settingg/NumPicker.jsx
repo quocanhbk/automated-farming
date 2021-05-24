@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { getFader } from "../../utils/color"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -42,13 +43,11 @@ const LabelWrapper = styled.div`
     color: ${props => props.theme.color.fill.primary};
     font-weight: 700;
 `
-const ElementWrapper = styled.div`
-    
+const ElementWrapper = styled.div`    
     display: flex;
     width:100%;
     flex-direction: row;
-    justify-content: center;
-    
+    justify-content: center;    
      & button {
         display: block;
         width: 20%;
@@ -57,18 +56,15 @@ const ElementWrapper = styled.div`
         text-align: center;
         border: none;
         outline: none;
-        padding: 0.5rem 1rem;
-        
+        padding: 0.5rem 1rem;        
         &:hover {
             background: ${props => getFader(props.theme.color.fill.primary, 0.8)};
         }
         justify-content:space-between;
         &:disabled{
         background: ${props => getFader(props.theme.color.fill.primary, 0.2)};
-    }
-        
-    }
-    
+    }        
+    }    
      & input[type='text']{
         width: 60%;
         text-align: center;
@@ -83,25 +79,27 @@ const ButtonWrapper = styled.div`
     justify-content: space-between;
 `
 const NumPicker = (props) => {
-    const [value, setValue] = useState(parseInt(props.value));
 
-
+    const [value, setValue] = useState(props.value);
+    useEffect(() => {
+        setValue(props.value)
+    }, [props.value]);
+        
     return (
-
         <Container >
             <MainContent>
-                <LabelWrapper>
+                <LabelWrapper>                    
                     <label>Công suất máy bơm</label>
                 </LabelWrapper>
                 <ElementWrapper>
                     <button onClick={() => setValue(value - 1)} disabled={(value <= 0) ? true : false}> - </button>
-                    <input type='text' value={parseInt(value)} onChange={(e) => setValue(parseInt(e.target.value))} />
+                    <input type='text' value={value} onChange={(e) => setValue(parseInt(e.target.value))} />
                     <button onClick={() => setValue(value + 1)} disabled={(value >= 100) ? true : false}> + </button>
                 </ElementWrapper>
             </MainContent>
             <ButtonWrapper>
-                <Button onClick={props.submit(value)}>   Lưu   </Button>
-                <Button onClick={() => setValue(parseInt(props.value))}>   Hủy </Button>
+                <Button onClick={(e)=> props.submit(value,e)}>   Lưu   </Button>
+                <Button onClick={() => { setValue(parseInt(props.value)) }}>   Hủy </Button>
             </ButtonWrapper>
         </Container>
     );

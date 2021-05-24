@@ -4,7 +4,6 @@ import Header from "../Header"
 import NumPicker from "./NumPicker"
 import React from 'react';
 import axios from 'axios'
-import Redirector from '../Redirector'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -23,38 +22,40 @@ const Body = styled.div`
 `
 
 const Settingg = () => {
-    let [setting, setSetting] = useState(50);
-    const submitSetting = (value) => {
+    const [setting, setSetting] = useState(50);
+    
+    const submitSetting = (value, e) => {        
         setSetting(value);
-        postData();
-
-    }
-    async function postData() {
-        let data = { setting: setting }
-        await axios.post("/api/setting", data);
+        postData(value);
+    }    
+    async function postData(value) {
+        let data = { setting: value };
+        const res = await axios.post("/api/setting", data);
+        console.log(res.data);        
     }
     async function getData() {
-        await axios("/api/setting")
-            .then((response) => {
-                setSetting(response.data);
-            })
-            .catch((error) => {
-                console.error("Error fetching data: ", error);
-            });
+        try {
+            const res = await axios.get('/api/setting');
+            setSetting(res.data.setting);
+            console.log(res.data);  
+        }
+        catch (error) {
+            console.error("Error fetching data: ", error);
+        }
+        
     }
     useEffect(() => {
-        getData()
+        getData();
+
     }, []);
 
     return (
-        <Redirector >
         <Container>
             <Header text={'Điều chỉnh công suất'} />
-            <Body>
+            <Body>                
                 <NumPicker value={setting} submit={submitSetting} />
             </Body>
-            </Container>
-        </Redirector >
+        </Container>
     )
 }
 

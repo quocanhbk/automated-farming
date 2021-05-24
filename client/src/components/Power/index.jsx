@@ -4,7 +4,6 @@ import Switch from "react-switch"
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { getFader } from '../../utils/color'
-import Redirector from '../Redirector'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -37,33 +36,36 @@ const Text = styled.div`
     }
 `
 const Power = () => {
-    const [checked, setChecked] = useState(true);
-    const handleChange = nextChecked => {//nextchecked===true?setChecked(1):setChecked(0);nextCheck "react-switch" 
+    const [checked, setChecked] = useState(true);    
+    const handleChange = nextChecked => {
         setChecked(nextChecked);
         postData()
     };
+
     async function postData() {
-        let status = checked ? "on" : "off"
-        let data = { power: status }
-        await axios.post("/api/power", data);
+        let power = checked ? "on" : "off";
+        let data = { power: power };
+        let res = await axios.post('/api/power', data);
+        console.log(data);
+        console.log(res.data);
     }
     async function getData() {
-        await axios("/api/power")
-            .then((response) => {
-                setChecked(response.data.power);
-            })
-            .catch((error) => {
-                console.error("Error fetching data: ", error);
-            });
+        try {
+            const res = await axios.get("/api/power");
+            console.log(res.data);
+            res.data.power === "on" ? setChecked(true) : setChecked(false)
+        } catch (error) {
+            console.error(error);
+            
+        }
     }
     useEffect(() => {
-        getData()
+        getData();
     }, []);
     return (
-        <Redirector >
         <Container>
             <Header text={'Bật/tắt hệ thống'} />
-            <Body>
+            <Body>                
                 <Text status={checked}><p> Hệ thống đang <span>{checked ? "bật" : "tắt"}</span> </p></Text>
                 <Switch
                     onChange={handleChange}
@@ -72,7 +74,6 @@ const Power = () => {
                 />
             </Body>
         </Container>
-        </Redirector >
     )
 }
 

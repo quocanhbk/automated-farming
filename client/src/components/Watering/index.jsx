@@ -2,7 +2,6 @@ import styled from "styled-components"
 import Header from "../Header"
 import React, { useState, useEffect } from 'react';
 import { getFader } from "../../utils/color";
-import Redirector from '../Redirector'
 
 
 const Container = styled.div`
@@ -98,7 +97,7 @@ const Watering = () => {
     const [progess, setProgess] = useState(0);
     const handleStop = (e) => {
         setDuration(timeLeft);
-        let data = { duration: duration };
+        //let data = { duration: duration };
         //await axios.post('url',data)
         window.location.reload();
     }
@@ -119,7 +118,6 @@ const Watering = () => {
     }, [ timeLeft, progess, duration ]);
 
     return (
-        <Redirector>
             <Container>
                 <Header text={'Tưới cây thủ công'} />
                 <Body>
@@ -148,7 +146,6 @@ const Watering = () => {
                     }
                 </Body>
             </Container>
-        </Redirector>
     )
 }
 
