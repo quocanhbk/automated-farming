@@ -49,3 +49,10 @@ content-type: application/json
 }
 ###
 GET http://localhost:5000/api/auth HTTP/1.1
+
+### POST update humid router
+POST http://localhost:5000/api/message/:amout HTTP/1.1
+content-type: application/json
+{
+    
+}
