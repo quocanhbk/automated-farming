@@ -2,39 +2,80 @@ const express = require('express')
 const router = express.Router()
 const feedList = require('../feedList')
 const schedule = require('node-schedule')
-const rule = new schedule.RecurrenceRule()
-let {dbConn, adafruit} = require('../connection.js')
+const fetch = require('node-fetch')
+let { checkHumid } = require('../iotFunctions')
+let { dbConn, adafruit } = require('../connection')
 
 
-router.get('/', (req,res) => {
+router.get('/', (res) => {
 
 })
 
-router.post('/', (req,res) => {
+router.post('/', (res) => {
     let feed_hs = feedList.find(feed => feed.name == "humid-sensor")
     let feed_lcd = feedList.find(feed => feed.name == "lcd")
-    let value = 0 // đọc dữ liệu từ sensor 
-    
-    rule.hour = 0 // hour (0 - 23)
-    rule.minute = 0 // minute (0 - 59)
-    rule.second = 3 // second(0 - 59)
 
-    let count = 0
+    let hour = "*"
+    let min = "*"
+    let sec = "5"
 
-    let job = schedule.scheduledJobs(rule, function() {
-        count += 1
-        console.log(count)
+    var cronExpress = "*/" + sec + " " + min + " " + hour + " * * *"
+    console.log(cronExpress)
+
+    var job = schedule.scheduleJob(cronExpress, function () {
+        let str_query = "SELECT sstatus FROM mainsystem WHERE 1"
+        dbConn.query(str_query, function (err, result) {
+            if (err) {
+                throw err;
+            }
+            else {
+                sstatus = result[0].sstatus
+                if (sstatus == 1) {
+                    var user = process.env.IO_USERNAME
+                    var pass = process.env.IO_PASSWORD
+                    let https_link = "https://io.adafruit.com/api/v2/" + user + "/feeds/humid-sensor/data/last?x-aio-key=" + pass
+                    let promesa = fetch(https_link)
+                    promesa.then((res) => {
+                        return res.json()
+                    }).then((json) => {
+                        var dateFormat = require('dateformat');
+                        let value = Number(json.value)
+                        var time = Number(Date.parse(json.created_at))
+                        var time = new Date(time)
+                        time = dateFormat(time, "yyyy-mm-dd hh:mm:ss")
+                        console.log(time)
+                        // let ins_query = "INSERT INTO message (system_id, mtime, humidity_value) VALUES (101, TIMESTAMP('" + time + "'), " + value + ")"
+                        let upd_query = "UPDATE message SET mtime = TIMESTAMP('" + time + "'), humidity_value = " + value + " WHERE 101"
+                        console.log(upd_query)
+                        dbConn.query(upd_query, function (err, result) {
+                            if (err) {
+                                throw err;
+                            }
+                            else {
+                                console.log(result)
+                            }
+                        })
+                        str_query = "SELECT smode FROM mainsystem WHERE 1"
+                        dbConn.query(str_query, function (err, result) {
+                            if (err) {
+                                throw err;
+                            }
+                            else {
+                                smode = result[0].smode
+                                if (smode == 1) {
+                                    checkHumid(value)
+                                }
+                            }
+                        })
+                    })
+                }
+            }
+        })
     })
 
-    // let str_query = ""
-    // dbConn.query(str_query, function(err,result) {
-    //     if (err) {
-    //         res.status(400).json({
-    //             error: err
-    //         })
-    //     }
-    //     else {
-    //         console.log(result)
-    //     }
-    // })
+
 })
+
+
+
+module.exports = router;

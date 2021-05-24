@@ -13,11 +13,11 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use('/api/auth', authRoute)
-app.use('/api/setting',requireAuth, settingRoute)
+app.use('/api/setting', requireAuth, settingRoute)
 app.use('/api/mode', requireAuth, modeRoute)
 app.use('/api/power', requireAuth, powerRoute)
 app.use('/api/humid', requireAuth, humidRoute)
-app.use('/api/message/:amout', requireAuth, updateHumidRoute)
+app.use('/api/message/:amount', updateHumidRoute)
 
 app.get('/*', requireAuth, (req, res) => {
     res.send("Oke")
