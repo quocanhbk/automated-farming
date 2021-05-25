@@ -5,7 +5,7 @@ require('dotenv').config()
 
 let {adafruit, dbConn} = require('./connection')
 let {requireAuth} = require('./middlewares/authMiddleware')
-let {settingRoute, modeRoute, powerRoute, authRoute, humidRoute, updateHumidRoute} = require('./router')
+let {settingRoute, modeRoute, powerRoute, authRoute, humidRoute, updateHumidRoute, getMessageRoute} = require('./router')
 let {handleIotButton} = require('./iotFunctions')
 
 const app = express()
@@ -17,7 +17,8 @@ app.use('/api/setting',requireAuth, settingRoute)
 app.use('/api/mode', requireAuth, modeRoute)
 app.use('/api/power', requireAuth, powerRoute)
 app.use('/api/humid', requireAuth, humidRoute)
-app.use('/api/message/:amount', updateHumidRoute)
+app.use('/api/update-humid', updateHumidRoute)
+app.use('/api/message', getMessageRoute)
 
 
 app.get('/api/history/:amount', (req, res) => {

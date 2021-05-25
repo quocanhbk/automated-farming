@@ -53,10 +53,10 @@ GET http://localhost:5000/api/auth HTTP/1.1
 
 
 ### POST update humid router
-POST http://localhost:5000/api/message/:amount HTTP/1.1
+POST http://localhost:5000/api/update-humid HTTP/1.1
 
 
 ### GET update bumid router
 
-GET http://localhost:5000/api/message/:amount HTTP/1.1  
+GET http://localhost:5000/api/message/50 HTTP/1.1  
 
