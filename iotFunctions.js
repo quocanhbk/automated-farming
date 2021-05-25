@@ -99,3 +99,9 @@ module.export = function runBuzzer() {
             } else return res.status(400).send({ error: "Missing top or bottom value" })
         });    
     }
+
+    module.exports = function sendHumidLCD(humid) {
+        let feed = feedList.find(feed => feed.name == "lcd")
+        let mess = "Humidity: " + humid
+        adafruit.publish(feed.link, mess)
+    }
