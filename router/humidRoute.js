@@ -38,7 +38,7 @@ router.post('/', (req, res) => {
             return res.status(200).send({
                 message: "Updated top and bottom value successfully",
             })
-        })
+        })  
     } else {
         return res.status(400).send({ error: "Must have both top and bottom value" })
     }
