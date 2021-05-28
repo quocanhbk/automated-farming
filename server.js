@@ -33,7 +33,7 @@ adafruit.on('message', (topic, message) => {
         handleIotButton()
     }
         
-    console.log(`${topic} : ${message.toString()}`)
+    //console.log(`${topic} : ${message.toString()}`)
 })
 
 const scheduler = new ToadScheduler()

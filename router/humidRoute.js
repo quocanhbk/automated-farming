@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
     dbConn.query(query, (err, result) => {
         if (err) res.json(400).json({error: err.sqlMessage})
         let {upper_bound: top, lower_bound: bottom} = result[0]
-        res.status(400).json({top, bottom})
+        res.status(200).json({top, bottom})
       });
 })
 

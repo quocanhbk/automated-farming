@@ -2,6 +2,7 @@ const feedList = require('./feedList')
 const {dbConn,adafruit} = require('./connection')
 const { default: axios } = require('axios')
 const moment = require('moment')
+const {query: queryHelper} = require('./helper')
 require("dotenv").config()
 
 const handleIotButton = () => {
@@ -64,42 +65,43 @@ const runBuzzer = () => {
 
 //kiểm tra độ ẩm
 const autoWatering = (message) => {
-    let drvFeed = feedList.find(feed => feed.name === "drv")
-    let humid = message.data
+    console.log("Auto watering ...")
+    // let drvFeed = feedList.find(feed => feed.name === "drv")
+    // let humid = message.data
     
-    let query = `SELECT upper_bound, lower_bound FROM farm.sensor WHERE system_id = '101'`
-    dbConn.query(query, (err, result) => {
-        if (err) throw err;
-        let {upper_bound: top, lower_bound: bottom} = result[0]
+    // let query = `SELECT upper_bound, lower_bound FROM farm.sensor WHERE system_id = '101'`
+    // dbConn.query(query, (err, result) => {
+    //     if (err) throw err;
+    //     let {upper_bound: top, lower_bound: bottom} = result[0]
 
-        let q2 = `SELECT sstatus FROM farm.mainsystem WHERE id = 101`
-        let power = 0
-        dbConn.query(q2, (err, result) => {
-            if (err) throw err
-            power = result[0].sstatus
-        })
-        if (power === 1) {
+    //     let q2 = `SELECT sstatus FROM farm.mainsystem WHERE id = 101`
+    //     let power = 0
+    //     dbConn.query(q2, (err, result) => {
+    //         if (err) throw err
+    //         power = result[0].sstatus
+    //     })
+    //     if (power === 1) {
 
-        }
-        dbConn.query(q2,function(err,result1){
-            if (err) res.json({error: err})
-            let power = result1[0].sstatus
-            if (power == 1) { 
-                if (humid < bottom) { // cho data của DRV lên 100 để tự động tưới khi đổ ẩm dưới ngưỡng bottom
-                    adafruit.publish(feed.link, mess[0])
-                    let q3 = `INSERT INTO farm.history (system_id, htime, humidity_value, duration) VALUES ('101', ? , ?, 1)`
-                    dbConn.query(q3,[d, humid], function (err, result4) {
-                        if (err) res.json({error: err})
-                        console.log("Inserted")
-                    })
-                } 
-                if (humid > stopvalue)
-                { // cho data của DRV về 0 khi độ ẩm lớn hơn stop value 
-                    adafruit.publish(feed.link, mess[1])
-                } 
-            } else return console.log('Power is off')
-        })
-    });    
+    //     }
+    //     dbConn.query(q2,function(err,result1){
+    //         if (err) res.json({error: err})
+    //         let power = result1[0].sstatus
+    //         if (power == 1) { 
+    //             if (humid < bottom) { // cho data của DRV lên 100 để tự động tưới khi đổ ẩm dưới ngưỡng bottom
+    //                 adafruit.publish(feed.link, mess[0])
+    //                 let q3 = `INSERT INTO farm.history (system_id, htime, humidity_value, duration) VALUES ('101', ? , ?, 1)`
+    //                 dbConn.query(q3,[d, humid], function (err, result4) {
+    //                     if (err) res.json({error: err})
+    //                     console.log("Inserted")
+    //                 })
+    //             } 
+    //             if (humid > stopvalue)
+    //             { // cho data của DRV về 0 khi độ ẩm lớn hơn stop value 
+    //                 adafruit.publish(feed.link, mess[1])
+    //             } 
+    //         } else return console.log('Power is off')
+    //     })
+    // });    
 }
 
 const writeLCD = (text) => {
@@ -114,18 +116,17 @@ const writeLCD = (text) => {
 
 const checkHumidScheduler = async () => {
     // check current power, if "off", return
-    let power = 0
-    dbConn.query("SELECT sstatus FROM mainsystem WHERE id = 101", (err, result) => {
-        if (err) return
-        power = result[0]["sstatus"]
-    })
-    if (power === 0) return
+    let powerRes = await queryHelper(dbConn, "SELECT sstatus FROM mainsystem WHERE id = 101").catch(console.log)
+    let power = powerRes[0]["sstatus"]
 
+    if (power === 0) return
+    console.log("SCHEDULE: Checking current humidity...")
     const humidValue = (await axios.get('https://io.adafruit.com/api/v2/quocanhbk17/feeds/humid-sensor/data/last', {
         headers: {
             'X-AIO-Key': process.env.IO_PASSWORD
         }
     })).data.value
+    console.log(`RESULT: ${humidValue}`)
     let now = moment().format('YYYY-MM-DD HH:mm:ss');
     // insert into message database
     let query = `INSERT INTO message (system_id, mtime, humidity_value) VALUES ("101", "${now}", ${humidValue})`
@@ -136,12 +137,8 @@ const checkHumidScheduler = async () => {
     writeLCD(`Humidity: ${humidValue}`)
 
     // check current Mode
-    let mode = 0
-    dbConn.query("SELECT smode FROM mainsystem WHERE id = 101" , (err, result) => {
-        if (err) return
-        mode = result[0]["smode"]
-    })
-    
+    let modeRes = await queryHelper(dbConn, "SELECT smode FROM mainsystem WHERE id = 101").catch(console.log)
+    let mode = modeRes[0]["smode"]
     if (mode === 1)
         autoWatering()
 }
