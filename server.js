@@ -8,7 +8,7 @@ require('dotenv').config()
 
 let {adafruit} = require('./connection')
 let {requireAuth} = require('./middlewares/authMiddleware')
-let {settingRoute, modeRoute, powerRoute, historyRoute, authRoute, humidRoute, getMessageRoute, wateringRoute} = require('./router')
+let {settingRoute, modeRoute, powerRoute, historyRoute, authRoute, humidRoute, messageRoute, wateringRoute} = require('./router')
 let {handleIotButton, checkHumidScheduler} = require('./iotFunctions')
 
 app.use(express.json())
@@ -18,7 +18,7 @@ app.use('/api/setting',requireAuth, settingRoute)
 app.use('/api/mode', requireAuth, modeRoute)
 app.use('/api/power', requireAuth, powerRoute)
 app.use('/api/humid', requireAuth, humidRoute)
-app.use('/api/message', getMessageRoute)
+app.use('/api/message', messageRoute)
 app.use('/api/history', requireAuth, historyRoute)
 app.use('/api/watering', requireAuth, wateringRoute)
 app.get('/', (req, res) => {
@@ -28,19 +28,18 @@ app.get('/', (req, res) => {
 // Handle input from IOT
 adafruit.on('message', (topic, message) => {
     let topicName = feedList.find(feed => feed.link === topic).name
-    if (topicName === 'button'){
-        console.log(message.toString().data)
+    let messageData = JSON.parse(message.toString()).data
+    if (topicName === 'button' && messageData == 1){
+        console.log(JSON.parse(message.toString()).data)
         handleIotButton()
     }
-        
-    //console.log(`${topic} : ${message.toString()}`)
 })
 
 const scheduler = new ToadScheduler()
 const task = new Task('simple', () => {
     checkHumidScheduler()
 })
-const job = new SimpleIntervalJob({seconds: 5}, task)
+const job = new SimpleIntervalJob({seconds: 30}, task)
 
 scheduler.addSimpleIntervalJob(job)
 

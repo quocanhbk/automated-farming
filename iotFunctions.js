@@ -6,7 +6,6 @@ const {query: queryHelper} = require('./helper')
 require("dotenv").config()
 
 const handleIotButton = () => {
-    console.log("Executing")
     let relayFeed = feedList.find(feed => feed.name == "relay").link
     let ledFeed = feedList.find(feed => feed.name == "led").link
     let query = `SELECT sstatus FROM mainsystem WHERE id = 101`
@@ -120,7 +119,7 @@ const checkHumidScheduler = async () => {
     let power = powerRes[0]["sstatus"]
 
     if (power === 0) return
-    console.log("SCHEDULE: Checking current humidity...")
+    process.stdout.write(`SCHEDULE: Checking current humidity at ${moment().format('YYYY-MM-DD HH:mm:ss')}...`)
     const humidValue = (await axios.get('https://io.adafruit.com/api/v2/quocanhbk17/feeds/humid-sensor/data/last', {
         headers: {
             'X-AIO-Key': process.env.IO_PASSWORD

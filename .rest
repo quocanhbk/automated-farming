@@ -64,3 +64,10 @@ GET http://localhost:5000/api/power
 
 ### POST manual watering for 5 seconds
 POST http://localhost:5000/api/watering/5
+###
+
+### GET history
+GET http://localhost:5000/api/history
+
+### GET history with certain rows
+GET http://localhost:5000/api/history/20
