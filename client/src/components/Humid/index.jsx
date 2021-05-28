@@ -23,8 +23,7 @@ const Body = styled.div`
 const Humid = () => {
     const [top, setTop] = useState(100);
     const [bottom, setBottom] = useState(50);
-    const submitHumid = (e, upper, lower) => {
-        e.preventDefault();
+    const submitHumid = (e, upper, lower) => {       
         setTop(upper);
         setBottom(lower);
         postData(upper, lower);

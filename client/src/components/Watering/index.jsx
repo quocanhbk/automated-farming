@@ -2,6 +2,7 @@ import styled from "styled-components"
 import Header from "../Header"
 import React, { useState, useEffect } from 'react';
 import { getFader } from "../../utils/color";
+import axios from "axios"
 
 
 const Container = styled.div`
@@ -100,9 +101,19 @@ const Watering = () => {
         //let data = { duration: duration };
         //await axios.post('url',data)
         window.location.reload();
+    }    
+    async function getData() {
+        try {
+            const res = await axios.get("/api/watering");
+            setDuration(res.data);            
+            console.log(res.data);
+        }
+        catch(error) {
+            console.error("Error fetching data: ", error);
+        }            
     }
     useEffect(() => {
-        
+        getData()        
         if (timeLeft < 0) {   
 
             setComplete(true);
