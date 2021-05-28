@@ -10,7 +10,6 @@ module.exports.requireAuth = (req, res, next) => {
                 res.redirect('/')
             }
             else {
-                console.log(data.string)
                 next()
             }
         })

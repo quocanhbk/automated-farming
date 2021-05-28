@@ -15,7 +15,6 @@ dbConn.connect(function(err) {
   else console.log("Failed to connect to database")
 });
 
-
 const adafruit = mqtt.connect('https://io.adafruit.com', {
     username: process.env.IO_USERNAME,
     password: process.env.IO_PASSWORD

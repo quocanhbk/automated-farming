@@ -20,12 +20,16 @@
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
     "mqtt": "^4.2.6",
     "mysql": "^2.18.1",
     "node-fetch": "^2.6.1",
     "node-schedule": "^2.0.0",
     "react-table-6": "^6.11.0",
-    "sequelize": "^6.6.2"
+    "sequelize": "^6.6.2",
+    "socket.io": "^4.1.2",
+    "socket.io-emitter": "^3.2.0",
+    "toad-scheduler": "^1.3.0"
   },
   "devDependencies": {
     "concurrently": "^6.1.0",

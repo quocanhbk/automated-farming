@@ -1,62 +1,66 @@
-POST http://localhost:5000/pub HTTP/1.1
+### GET humid //TESTED
+GET http://localhost:5000/api/humid
+
+### POST humid //TESTED
+POST http://localhost:5000/api/humid HTTP/1.1
 content-type: application/json
 
 {
-    "topic": "button",
-    "message": "hello button from node"
+    "top": "200",
+    "bottom": "50"
 }
+###
 
-### POST setting to database
+### GET humid //TESTED
+GET http://localhost:5000/api/humid HTTP/1.1
 
+### POST sign up //TESTED
+POST http://localhost:5000/api/auth/signup HTTP/1.1
+content-type: application/json
+
+{
+    "username": "boomer",
+    "password": "boomer"
+}
+###
+
+### POST login //TESTED
+POST http://localhost:5000/api/auth/login HTTP/1.1
+content-type: application/json
+
+{
+    "username": "quocanhbk",
+    "password": "quocanh1"
+}
+###
+
+### GET message //TESTED
+GET http://localhost:5000/api/message
+
+### POST setting //TESTED
 POST http://localhost:5000/api/setting HTTP/1.1
 content-type: application/json
 
 {
-    "setting": "100"
+    "setting": "20"
 }
-
-### GET power from database
-
-GET  http://localhost:5000/api/setting HTTP/1.1
-content-type: application/json
-
-
-
 ###
 
-POST http://localhost:5000/api/power HTTP/1.1
+### GET setting //TESTED
+GET http://localhost:5000/api/setting
 
-###
-
-GET http://localhost:5000/api/power HTTP/1.1
-
-###
-
+### POST mode //TESTED
 POST http://localhost:5000/api/mode HTTP/1.1
 ###
 
-GET http://localhost:5000/api/mode HTTP/1.1
+### GET mode //TESTED
+GET http://localhost:5000/api/mode
 
-###
+### POST power //TESTED 
+POST http://localhost:5000/api/power
 
-POST http://localhost:5000/api/auth/login HTTP/1.1
+### GET power //TESTED
+GET http://localhost:5000/api/power
 
-content-type: application/json
-
-{
-    "username": "huan",
-    "password": "123"
-}
-###
-GET http://localhost:5000/api/auth HTTP/1.1
-
-
-
-### POST update humid router
-POST http://localhost:5000/api/update-humid HTTP/1.1
-
-
-### GET update bumid router
-
-GET http://localhost:5000/api/message/50 HTTP/1.1  
-
+### POST manual watering for 5 seconds
+POST http://localhost:5000/api/watering/5
