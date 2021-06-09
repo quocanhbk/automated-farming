@@ -1,62 +1,33 @@
-import { useEffect, useState } from "react"
 import styled from "styled-components"
 import Header from "../Header"
-import NumPicker from "./NumPicker"
-import React from 'react';
-import axios from 'axios'
+import BoundForm from "./BoundForm"
+import { getFader } from '../../utils/color'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
     justify-content: center;
-   
+    background: ${props => getFader(props.theme.color.fill.primary, 0.2)};
 `
 const Body = styled.div`
     flex: 1;
-    padding: 15%;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: 1rem;
-    
+    //background: ${props => getFader(props.theme.color.fill.primary, 0.2)}
 `
 
-const Settingg = () => {
-    const [setting, setSetting] = useState(50);
-    
-    const submitSetting = (value, e) => {        
-        setSetting(value);
-        postData(value);
-    }    
-    async function postData(value) {
-        let data = { setting: value };
-        const res = await axios.post("/api/setting", data);
-        console.log(res.data);        
-    }
-    async function getData() {
-        try {
-            const res = await axios.get('/api/setting');
-            setSetting(res.data.setting);
-            console.log(res.data);  
-        }
-        catch (error) {
-            console.error("Error fetching data: ", error);
-        }
-        
-    }
-    useEffect(() => {
-        getData();
-
-    }, []);
-
+const Humid = () => {
     return (
         <Container>
             <Header text={'Điều chỉnh công suất'} />
-            <Body>                
-                <NumPicker value={setting} submit={submitSetting} />
+            <Body>
+                <BoundForm/>
             </Body>
         </Container>
     )
 }
 
-export default Settingg
+export default Humid

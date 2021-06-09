@@ -17,21 +17,20 @@ const LabelToggle = styled.label`
     align-items: center;
     cursor: pointer;
     padding: 4px 8px 4px 0;
-    pointer-events: ${props => props.displayMode !== "edit" ? "none" : "auto"};
 `;
 const ToggleSpan = styled.span`
     position: relative;
     display:block;
-    width: 3rem;
-    height: 1.4rem;
+    width: 4rem;
+    height: 2rem;
 `;
 const StyleInput = styled.input`
     display: none;
     &:checked + .toggle-switch:before{
-        transform: translateX(1.6rem);
+        transform: translateX(2rem);
     }
-    &:checked ~ .toggle-switch{
-        transition: 0.4s;
+    &:checked + .toggle-switch {
+        background: ${props => props.theme.color.fill.success};
     }
 `;
 //the toggle
@@ -46,25 +45,22 @@ const StyleSpan = styled.span`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: ${props => props.theme.color.fill.primary};
+    background-color: ${props => props.theme.color.fill.danger};
     transition: .4s;
-    border-radius: 999px;
+    border-radius: 99px;
     box-shadow: ${props => props.theme.shadow};
-    //overflow: hidden;
-
-    //the dotted
+    
     &:before{
         position: absolute;
         content: "";
-        height: 1.6rem;
-        width: 1.6rem;
-        top: -0.1rem;
-        left: -0.1rem;
-        border-radius:999px;
-        bottom: 0.05rem;
-        background-color: ${props => props.theme.color.background.primary};
+        height: 2.4rem;
+        width: 2.4rem;
+        top: -0.2rem;
+        left: -0.2rem;
+        border-radius: 99px;
+        bottom: 0.1rem;
+        background-color: ${props => props.theme.color.background.secondary};
         box-shadow: 0px 0px 4px rgba(0,0,0,0.64);
-        -webkit-transition: .4s;
         transition: .4s;
     }
 `;
@@ -80,43 +76,32 @@ const DarkIcon = () =>
             <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
         </svg>
     </Icon>
-const ThemeToggle = (props) => {
-
-    const handleSelect = (e) => {
-        props.onSelect(e.target.checked)
-    }
+const BigToggle = ({value, onChange}) => {
 
     return(  
-        <LabelToggle {...props}>
+        <LabelToggle>
             <ToggleSpan>
                 <StyleInput
-                type="checkbox"
-                name={props.name} 
-                checked={props.value}
-                onChange={handleSelect} 
+                    type="checkbox"
+                    checked={value}
+                    onChange={(e) => onChange(e.target.checked)} 
                 />
-                <StyleSpan className="toggle-switch">
-                    <DarkIcon/>
-                    <LightIcon/>
-                </StyleSpan>
+                <StyleSpan className="toggle-switch"/>
             </ToggleSpan>
         </LabelToggle>
     )
 }
-ThemeToggle.propTypes = {
+BigToggle.propTypes = {
     disabled:PropTypes.bool,
-    default:PropTypes.bool,
-    className: PropTypes.string,
-    onSelect: PropTypes.func,
-    name:PropTypes.string,
-    displayMode: PropTypes.oneOf(["edit", "view", "disabled"]),
-    theme:PropTypes.string
+    onChange: PropTypes.func,
+    value: PropTypes.bool,
+    trueIcon: PropTypes.element,
+    falseIcon: PropTypes.element
 }
-ThemeToggle.defaultProps = {
-    onSelect: (x) => {},
-    default: false,
-    displayMode: "edit",
-    disabled:false
+BigToggle.defaultProps = {
+    onChange: () => {},
+    trueIcon: <DarkIcon/>,
+    falseIcon: <LightIcon/>
 }
 
-export default ThemeToggle;
+export default BigToggle;

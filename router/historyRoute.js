@@ -3,7 +3,7 @@ const { dbConn } = require('../connection')
 const router = express.Router()
 
 router.get('/:amount', (req, res) => {
-    let amount = req.params.amount || 10
+    let amount = req.params.amount
     let query = `SELECT htime, humidity_value, duration FROM farm.history ORDER BY htime DESC LIMIT ${amount}`
     
     dbConn.query(query, (err, result) => {
@@ -13,7 +13,7 @@ router.get('/:amount', (req, res) => {
             humidity: res.humidity_value,
             duration: res.duration
         }))
-        res.status(200).json(history)
+        res.status(200).json({history})
     });
 })
 router.get('/', (req, res) => {
@@ -27,7 +27,7 @@ router.get('/', (req, res) => {
             humidity: res.humidity_value,
             duration: res.duration
         }))
-        res.status(200).json(history)
+        res.status(200).json({history})
     });
 })
 

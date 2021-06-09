@@ -7,8 +7,9 @@ const Container = styled.div`
     padding: 0.5rem;
     border-radius: 99px;
     transition: background linear 0.1s;
+    cursor: pointer;
     &:hover {
-        background: ${props => getFader(props.theme.color.border.primary, 0.5)};
+        background: ${props => getFader(props.theme.color.border.primary, 0.3)};
     }
 `
 

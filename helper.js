@@ -1,11 +1,11 @@
-module.exports.query = async (conn, q, params) => new Promise(
-    (resolve, reject) => {
-      const handler = (error, result) => {
-          if (error) {
-          reject(error);
-          return;
-        }
-        resolve(result);
-      }
-      conn.query(q, params, handler);
-    });
+module.exports.query = async (dbConn, queryCommand) => {
+    return new Promise((resolve, reject) => {
+        dbConn.query(queryCommand, (error, result) => {
+            if (error) {
+                reject(error)
+                return
+            }
+            else resolve(result)
+        })
+    })
+}

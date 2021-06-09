@@ -6,8 +6,8 @@ POST http://localhost:5000/api/humid HTTP/1.1
 content-type: application/json
 
 {
-    "top": "200",
-    "bottom": "9"
+    "top": "75",
+    "bottom": "50"
 }
 ###
 
@@ -35,14 +35,14 @@ content-type: application/json
 ###
 
 ### GET message //TESTED
-GET http://localhost:5000/api/message
+GET http://localhost:5000/api/message/100
 
 ### POST setting //TESTED
 POST http://localhost:5000/api/setting HTTP/1.1
 content-type: application/json
 
 {
-    "setting": "20"
+    "setting": "50"
 }
 ###
 
@@ -63,7 +63,7 @@ POST http://localhost:5000/api/power
 GET http://localhost:5000/api/power
 
 ### POST manual watering for 5 seconds
-POST http://localhost:5000/api/watering/5
+GET http://localhost:5000/api/watering
 ###
 
 ### GET history

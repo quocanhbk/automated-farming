@@ -1,14 +1,19 @@
 import styled from "styled-components"
 import Header from "../Header"
-import Switch from "react-switch"
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { getFader } from '../../utils/color'
-const Container = styled.div`
+import BigToggle from '../BigToggle'
+import Loader from '../Loader'
+import {FaReact} from 'react-icons/fa'
+import Snackbar from '../Snackbar'
+import { BsCheckCircle } from "react-icons/bs"
 
+const Container = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
+    background: ${props => getFader(props.theme.color.fill.primary, 0.2)};
 `
 const Body = styled.div`
     flex: 1;
@@ -18,61 +23,82 @@ const Body = styled.div`
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    & .MuiSwitch-colorSecondary.Mui-checked {
-        color: ${props => props.theme.color.fill.primary};
-    }
 `
-const Text = styled.div`
+const Text = styled.p`
+    color: ${props => props.mode ? props.theme.color.fill.success : props.theme.color.fill.danger};
+    font-weight: 600;
+    padding: 0.5rem;
+`
+const Wrapper = styled.div`
     display: flex;  
-    width: 75%;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem    ;
+    flex-direction: column;    
     border-radius: 0.5rem;
-    background: ${props => getFader(props.mode === true ? props.theme.color.fill.success : props.mode === false ? props.theme.color.fill.danger : props.theme.color.fill.warning, 0.1)};
-    color: ${props => props.mode === true ? props.theme.color.fill.success : props.mode === false ? props.theme.color.fill.danger : props.theme.color.fill.warning};
-    & p {
-        margin: 0 auto;       
-        text-align:center;
-    }
+    width: 80%;
+    gap: 1rem;
+    border: 1px solid ${props => props.theme.color.fill.primary};
+    background: ${props => props.theme.color.background.primary};
+    align-items: center;
+    position: relative;
+    overflow: hidden;
 `
-
+const Notify = styled.div`
+    padding: 1rem;
+    background: ${props => props.theme.color.fill.success};
+    color: ${props => props.theme.color.background.primary};
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+`
+const ToggleContainer = styled.div`
+    padding-bottom: 0.5rem;
+`
 const Mode = () => {
-    const [checked, setChecked] = useState(true);
-    
-    const handleChange = nextChecked => {
-        setChecked(nextChecked);
-        postData();
-    };
-    
-    async function postData() {
-        let mode = checked ? "auto" : "manual";
-        let data = { mode: mode };
-        let res = await axios.post('/api/mode', data);
-        console.log(res.data);
+    const [checked, setChecked] = useState(false)
+    const [loading, setLoading] = useState(true)
+    const [notify, setNotify] = useState(false)
+    const [postLoading, setPostLoading] = useState(false)
+    const  postData = async () => {
+        if (!postLoading) {
+            setPostLoading(true)
+            setChecked(!checked)
+            await axios.post('/api/mode')
+            setNotify(true)
+            setPostLoading(false)
+        }
     }
-    async function getData() {        
+
+    const getData = async () => {        
         try {
-            const res = await axios("/api/mode");
-            console.log(res.data);
-            res.data.mode === "auto" ? setChecked(true) : setChecked(false)
+            const res = await axios.get("/api/mode");
+            setChecked(res.data.mode === "auto")
         } catch (error) {
-            console.error(error);
-        }                    
+            setChecked(false)
+        }
+        setTimeout(() => setLoading(false), 400) 
     }
     useEffect(() => {
         getData();
     }, []);
+    
     return (
         <Container>
             <Header text={'Đổi chế độ tưới'} />
-            <Body>
-                <Text mode={checked}><p> Chế độ tưới: <span>{checked ? "Tự động" : "Thủ công"}</span> </p></Text>
-                <Switch
-                    onChange={handleChange}
-                    checked={checked}
-                    className="react-switch"
-                />
-            </Body>
+                <Body>
+                    <Wrapper>
+                        {loading && <Loader><FaReact size="4rem"/></Loader>}
+                        <Text mode={checked}>Chế độ tưới: <span>{checked ? "Tự động" : "Thủ công"}</span></Text>
+                        <ToggleContainer>
+                            <BigToggle value={checked} onChange={() => postData()}/>
+                        </ToggleContainer>
+                    </Wrapper>
+                </Body>
+                <Snackbar visible={notify} onClose={() => setNotify(false)} timeOut={1500}>
+                    <Notify>
+                        <BsCheckCircle size="1.2rem"/>
+                        <p>Đổi chế độ tưới thành công !</p>
+                    </Notify>
+                </Snackbar>
             </Container>
     )
 }

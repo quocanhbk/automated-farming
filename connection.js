@@ -11,8 +11,8 @@ const dbConn = mysql.createConnection({
 });
 
 dbConn.connect(function(err) {
-  if (!err) console.log("Connected to database!");
-  else console.log("Failed to connect to database")
+  if (!err) console.log("[DATABASE]   Connected successfully");
+  else console.log("[DATABASE]  Failed to connect")
 });
 
 const adafruit = mqtt.connect('https://io.adafruit.com', {
@@ -21,13 +21,11 @@ const adafruit = mqtt.connect('https://io.adafruit.com', {
 })
 //Connect and subscribe to adafruit server
 adafruit.on('connect', () => {
-    console.log("Connected to adafruit successfully")
+    console.log("[ADAFRUIT]   Connected successfully")
     adafruit.subscribe(feedList.map(feed => feed.link), (err) => {
-        if (!err) console.log("Subscribe to all feeds")
-        else console.log(err)
+        if (!err) console.log("[ADAFRUIT]   Subscribed to all feeds")
+        else console.log("[ADAFRUIT]   Error: " + err.message)
     })
 })
 
-
-// adafruit.publish('quocanhbk17/feeds/relay', {})
 module.exports = {dbConn, adafruit}

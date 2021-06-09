@@ -2,11 +2,11 @@ const express = require('express')
 const router = express.Router()
 let {dbConn} = require('../connection.js')
 
-router.get('/', (req, res) => {
+router.get('/', (_, res) => {
     let str_query = "SELECT power FROM motor WHERE system_id = 101"
     dbConn.query(str_query, function (err, result) {
         if (err) res.status(400).json({error: err.sqlMessage})
-        res.status(200).json({setting: result[0].power})
+        else res.status(200).json({setting: result[0].power})
     })
 })
 

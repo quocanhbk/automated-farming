@@ -3,6 +3,8 @@ const {dbConn,adafruit} = require('./connection')
 const { default: axios } = require('axios')
 const moment = require('moment')
 const {query: queryHelper} = require('./helper')
+const { getSystemMode, toggleSystemMode, setHumidity } = require('./systemMode')
+const { getHumidityLimit, getWateringMode } = require('./utils')
 require("dotenv").config()
 
 const handleIotButton = () => {
@@ -62,47 +64,6 @@ const runBuzzer = () => {
     )
 }
 
-//kiểm tra độ ẩm
-const autoWatering = (message) => {
-    console.log("Auto watering ...")
-    // let drvFeed = feedList.find(feed => feed.name === "drv")
-    // let humid = message.data
-    
-    // let query = `SELECT upper_bound, lower_bound FROM farm.sensor WHERE system_id = '101'`
-    // dbConn.query(query, (err, result) => {
-    //     if (err) throw err;
-    //     let {upper_bound: top, lower_bound: bottom} = result[0]
-
-    //     let q2 = `SELECT sstatus FROM farm.mainsystem WHERE id = 101`
-    //     let power = 0
-    //     dbConn.query(q2, (err, result) => {
-    //         if (err) throw err
-    //         power = result[0].sstatus
-    //     })
-    //     if (power === 1) {
-
-    //     }
-    //     dbConn.query(q2,function(err,result1){
-    //         if (err) res.json({error: err})
-    //         let power = result1[0].sstatus
-    //         if (power == 1) { 
-    //             if (humid < bottom) { // cho data của DRV lên 100 để tự động tưới khi đổ ẩm dưới ngưỡng bottom
-    //                 adafruit.publish(feed.link, mess[0])
-    //                 let q3 = `INSERT INTO farm.history (system_id, htime, humidity_value, duration) VALUES ('101', ? , ?, 1)`
-    //                 dbConn.query(q3,[d, humid], function (err, result4) {
-    //                     if (err) res.json({error: err})
-    //                     console.log("Inserted")
-    //                 })
-    //             } 
-    //             if (humid > stopvalue)
-    //             { // cho data của DRV về 0 khi độ ẩm lớn hơn stop value 
-    //                 adafruit.publish(feed.link, mess[1])
-    //             } 
-    //         } else return console.log('Power is off')
-    //     })
-    // });    
-}
-
 const writeLCD = (text) => {
     let feed = feedList.find(feed => feed.name == "lcd")
     adafruit.publish(feed.link, JSON.stringify({
@@ -115,19 +76,20 @@ const writeLCD = (text) => {
 
 const checkHumidScheduler = async () => {
     // check current power, if "off", return
-    let powerRes = await queryHelper(dbConn, "SELECT sstatus FROM mainsystem WHERE id = 101").catch(console.log)
-    let power = powerRes[0]["sstatus"]
-
+    let powerRes = await queryHelper(dbConn, "SELECT sstatus FROM mainsystem WHERE id = 101").catch(err => console.log(err))
+    let power = powerRes ? powerRes[0]["sstatus"]: 0
     if (power === 0) return
-    process.stdout.write(`SCHEDULE: Checking current humidity at ${moment().format('YYYY-MM-DD HH:mm:ss')}...`)
-    const humidValue = (await axios.get('https://io.adafruit.com/api/v2/quocanhbk17/feeds/humid-sensor/data/last', {
+
+    // start checking current humidity...
+    console.log(`[SYSTEM]     SCHEDULE: Checking humidity at ${moment().format('YYYY-MM-DD HH:mm:ss')}...`)
+    const humidValue = parseInt(JSON.parse((await axios.get('https://io.adafruit.com/api/v2/quocanhbk17/feeds/humid-sensor/data/last', {
         headers: {
             'X-AIO-Key': process.env.IO_PASSWORD
         }
-    })).data.value
-    console.log(`RESULT: ${humidValue}`)
+    })).data.value).data)
+    console.log(`[SYSTEM]     Current humidity: ${humidValue}`)
+    // after checking, insert message into message database
     let now = moment().format('YYYY-MM-DD HH:mm:ss');
-    // insert into message database
     let query = `INSERT INTO message (system_id, mtime, humidity_value) VALUES ("101", "${now}", ${humidValue})`
     dbConn.query(query, (err, result) => {
         if (err) console.log(err.sqlMessage)
@@ -135,17 +97,71 @@ const checkHumidScheduler = async () => {
     // write into LCD
     writeLCD(`Humidity: ${humidValue}`)
 
-    // check current Mode
-    let modeRes = await queryHelper(dbConn, "SELECT smode FROM mainsystem WHERE id = 101").catch(console.log)
+    // check current Mode. If auto, start automatic watering!
+    let modeRes = await queryHelper(dbConn, "SELECT smode FROM mainsystem WHERE id = 101").catch(err => console.log(err))
     let mode = modeRes[0]["smode"]
-    if (mode === 1)
-        autoWatering()
+    if (mode === 1) {
+        // get bottom limit of humidity
+        let {lower_bound} = (await queryHelper(dbConn, "SELECT lower_bound FROM farm.sensor WHERE system_id = '101'"))[0]
+        // if current humidity < bottom limit => start automatic watering
+        if (humidValue < lower_bound){
+            autoWatering(humidValue)
+        }
+            
+    }
 }
 
+//kiểm tra độ ẩm
+const autoWatering = (humidValue) => {
+    console.log("[SYSTEM]     Checking system watering mode")
+    let systemMode = getSystemMode()
+    if (systemMode === "WATERING") {
+        console.log("[SYSTEM]     The system is watering. Watering aborted")
+    } else {
+        console.log("[SYSTEM]     Starting watering")
+        setHumidity(humidValue)
+        toggleSystemMode()
+    }
+}
+
+// this function will run every 40 seconds
+const handleSensorInput = async (currentHumidity) => {
+    let {top} = await getHumidityLimit()
+    let wateringMode = await getWateringMode()
+    if (getSystemMode() === "WATERING" && currentHumidity > top && wateringMode === 1) {
+        // stop drv
+        toggleSystemMode()
+    }
+}
+
+const startManualWatering = async () => {
+    // if watering mode is auto, switch to manual
+    let query = `SELECT smode FROM mainsystem WHERE id = 101`;
+    let {smode} = (await queryHelper(dbConn, query))[0]
+    if (smode === 1) {
+        let query = "UPDATE mainsystem SET smode = 0 WHERE id = 101"
+        queryHelper(dbConn, query)
+    }
+
+    const humidValue = parseInt(JSON.parse((await axios.get('https://io.adafruit.com/api/v2/quocanhbk17/feeds/humid-sensor/data/last', {
+        headers: {
+            'X-AIO-Key': process.env.IO_PASSWORD
+        }
+    })).data.value).data)
+    setHumidity(humidValue)
+    toggleSystemMode()
+}
+
+const stopManualWatering = async () => {
+    toggleSystemMode()
+}
 module.exports = {
     handleIotButton, 
     runBuzzer, 
     autoWatering, 
     writeLCD,
-    checkHumidScheduler
+    checkHumidScheduler,
+    handleSensorInput,
+    startManualWatering,
+    stopManualWatering
 }

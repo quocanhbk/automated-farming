@@ -14,9 +14,17 @@ const store = createStore(
         }),
         
         //Theming
-        isDark: false,
-        toggleTheme: action((state) => {
-            state.isDark = !state.isDark
+        isDark: true,
+        setTheme: action((state, payload) => {
+            state.isDark = payload
+        }),
+        power: true,
+        getPower: thunk(async (actions, payload) => {
+            const res = await axios.get("/api/power")
+            actions.setPower(res.data.power === "on")
+        }),
+        setPower:action((state,payload) => {
+            state.power = payload
         })
     })
 )

@@ -1,8 +1,10 @@
 import { useState } from "react"
-import styled from "styled-components"
+import styled, { keyframes } from "styled-components"
 import { getFader } from "../../utils/color"
 import axios from 'axios'
 import { useStoreActions } from "easy-peasy"
+import {FaReact} from 'react-icons/fa'
+
 
 const Container = styled.div`
     height: 100%;
@@ -11,8 +13,9 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     gap: 1rem;
+    background: ${props => getFader(props.theme.color.fill.primary, 0.2)};
 `
-const LoginWindow = styled.div`
+const LoginWindow = styled.form`
     width: 80%;
     border: 2px solid ${props => props.theme.color.fill.primary};
     display: flex;
@@ -20,6 +23,8 @@ const LoginWindow = styled.div`
     gap: 0rem;
     border-radius: 0.5rem;
     overflow: hidden;
+    background: ${props => props.theme.color.background.primary};
+    position: relative;
 `
 const FormControl = styled.div`
     display: flex;
@@ -31,12 +36,13 @@ const FormControl = styled.div`
     }
 
     & input {
+        letter-spacing: 1px;
         background: transparent;
         border: 1px solid ${props => props.theme.color.border.primary};
         padding: 0.5rem;
         border-radius: 0.5rem;
         outline: none;
-        color: ${props => props.theme.color.text.primary};
+        color: ${props => props.theme.color.fill.primary};
         transition: border 0.15s ease-in-out;
         &:focus {
             border: 1px solid ${props => props.theme.color.fill.primary};
@@ -84,6 +90,8 @@ const ButtonWrapper = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        margin-bottom: 0.2rem;
     }
     & .mode {
         font-style: italic;
@@ -100,10 +108,28 @@ const WelcomeText = styled.div`
     color: ${props => props.theme.color.fill.secondary};
     font-family: 'Paytone One';
 `
+const spin = keyframes`
+    from {transform: rotate(0deg)}
+    to {transform: rotate(360deg)}
+`
+const Loader = styled.div`
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: ${props => props.theme.color.fill.danger};
+    & .auth-spin {
+        animation: ${spin} 0.75s linear 0s infinite normal forwards;
+    }
+`
 
 const Login = () => {
     const setUsername = useStoreActions(state => state.setUsername)
     const [isLogin, setIsLogin] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
     const [data, setData] = useState({
         username: "",
@@ -113,26 +139,6 @@ const Login = () => {
     const handleChange = (field, e) => {
         setData({...data, [field]: e.target.value})
         if (errorMessage !== "") setErrorMessage("")
-    }
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter")
-            submitForm()
-    }
-    const submitForm = async () => {
-        if (data.username === "") {
-            handleError('no_username')
-            return
-        }
-        else if (data.password === "") {
-            handleError('no_password')
-            return
-        }
-        let path = isLogin ? '/api/auth/login' : '/api/auth/signup'
-        let returnData = (await axios.post(path, {username: data.username, password: data.password})).data
-        if (returnData.error)
-            handleError(returnData.error)
-        else if (returnData.username)
-            setUsername(returnData.username)
     }
     const changeMode = () => {
         setData({username: "", password: ""})
@@ -151,10 +157,33 @@ const Login = () => {
         else if (message === "no_password")
             setErrorMessage("Chưa nhập mật khẩu")
     }
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        if (data.username === "") {
+            handleError('no_username')
+            return
+        }
+        else if (data.password === "") {
+            handleError('no_password')
+            return
+        }
+        setLoading(true)
+        let path = isLogin ? '/api/auth/login' : '/api/auth/signup'
+        let returnData = (await axios.post(path, {username: data.username, password: data.password})).data
+        if (returnData.error) {
+            setLoading(false)
+            handleError(returnData.error)
+        } 
+        else if (returnData.username) {
+            setLoading(false)
+            setUsername(returnData.username)
+        }
+    }
     return (
         <Container>
             <WelcomeText>Welcome to Smiley Farm</WelcomeText>
-            <LoginWindow>
+            <LoginWindow onSubmit={handleSubmit}>
+         
                 <Header>{isLogin ? "ĐĂNG NHẬP" : "ĐĂNG KÝ"}</Header>
                 <FormWrapper>
                     <FormControl>
@@ -163,12 +192,18 @@ const Login = () => {
                     </FormControl>
                     <FormControl>
                         <label>Mật khẩu</label>
-                        <input type="password" value={data.password} onChange={e => handleChange("password", e)} onKeyDown={handleKeyDown}/>
+                        <input type="password" value={data.password} onChange={e => handleChange("password", e)}/>
                     </FormControl>
                 </FormWrapper>
                 <ButtonWrapper>
-                    <div className="error-message">{errorMessage}</div>
-                    <button onClick={submitForm}>{isLogin ? "Đăng nhập" : "Đăng ký"}</button>
+                    <div className="error-message">
+                        {loading && 
+                        <Loader>
+                            <FaReact size="1.2rem" className="auth-spin"/>
+                        </Loader>}
+                        {errorMessage}
+                    </div>
+                    <button>{isLogin ? "Đăng nhập" : "Đăng ký"}</button>
                     <div className="mode" onClick={changeMode}>{isLogin ? "Đăng ký" : "Đăng nhập"}</div>
                 </ButtonWrapper>
             </LoginWindow>

@@ -10,7 +10,8 @@ import Settingg from './Settingg'
 
 
 const Container = styled.div`
-    width: 24rem;
+    width: 100%;
+    max-width: 400px;
     background: ${props => props.theme.color.background.primary};
     height: 100%;
 

@@ -20,12 +20,14 @@ const Body = styled.div`
 
 const Dashboard = () => {
     let username = useStoreState(state => state.username)
+    let power = useStoreState(state => state.power)
+    
     return (
         username === null ? <Login/> :
         <Container>
             <Header/>
             <Body>
-                <PowerTag status="on"/>
+                <PowerTag status={power}/>
                 <HumidChart/>
                 <ButtonGroup/>
             </Body>

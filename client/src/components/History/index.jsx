@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useTable } from 'react-table'
 import Header from "../Header"
-
+import axios from 'axios'
+import moment from 'moment'
+import { getFader } from '../../utils/color'
+import Loader from '../Loader'
+import {FaReact} from 'react-icons/fa'
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -13,173 +16,85 @@ const Body = styled.div`
     flex: 1;
     padding: 1rem;
     display: flex;
-    justify-content:center;
     flex-direction: column;
     gap: 1rem;
     background: ${props => props.theme.color.background.primary};
+    background: ${props => getFader(props.theme.color.fill.primary, 0.2)};
+    overflow: auto;
 `
-const Styles = styled.div`
-  padding: 1rem;
-
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-
-    tr {
-           td{ text-align: center;}
-           :last-child {
-                td {
-                   border-bottom: 0;            
-                }
-            }
-        
-    }
-    
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.4rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-      
-      :last-child {
-        border-right: 0;
-        
-      }
-    }
-  }
+const Table = styled.div`
+    border: 1px solid ${props => props.theme.color.fill.primary};
+    overflow: auto;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
 `
+const HeaderCell = styled.div`
+    padding: 0.5rem 0;
+    background: ${props => props.theme.color.fill.primary};
+    color: ${props => props.theme.color.background.primary};
+    flex: ${props => props.flex};
+    text-align: center;
+`
+const Tbody = styled.tbody`
+    flex: 1;
+    overflow: overlay;
+    scroll-behavior: smooth;
+    position: relative;
+    /* width */
+    ::-webkit-scrollbar {
+        width: 0px;
+    }   
+`
+const Row = styled.div`
+    display: flex;
+    background: ${props => props.theme.color.background.primary};
+    &:nth-child(even) {
+        background: ${props => getFader(props.theme.color.border.primary, 0.2)};
+    }
+`
+const Cell = styled.td`
+    text-align: center;
+    padding: 0.5rem 0;
+    flex: ${props => props.flex};
+`
+const History = () => {
 
-const Table=({ columns, data })=> {
-    
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({
-        columns,
-        data,
-    })
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(true)
 
-    
-    return (
-        <table {...getTableProps()}>
-            <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                            })}
-                        </tr>
-                    )
-                })}
-            </tbody>
-        </table>
-    )
-}
-
-const History=()=> {
-    const columns =
-        [
-            {
-                Header: 'Thời điểm',
-                accessor: 'time'
-                
-            },
-            {
-                Header: 'Độ ẩm',
-                accessor: 'humid'
-                
-            },
-            {
-                Header: 'Thời gian(s)',
-                accessor: 'duration'
-
-            },
-        ]
-    
-
-    const data = [
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
-        },
-        {
-            time: '17/05/2021 - 21:00',
-            humid: 50,
-            duration: 100
+    useEffect(() => {
+        const fetchData = async () => {
+            let res = (await axios.get('/api/history/100')).data.history
+            setData(res)
+            setLoading(false)
         }
-    ]
+        fetchData()
+    })
 
     return (
         <Container>
             <Header text={'Xem lịch sử tưới'} />
             <Body>
-                
-                <Styles>
-                    <Table columns={columns} data={data} />
-                </Styles>
-                
+                <Table>
+                    <Row>
+                        <HeaderCell flex={2}>Thời điểm</HeaderCell>
+                        <HeaderCell flex={1}>Độ ẩm</HeaderCell>
+                        <HeaderCell flex={1}>Thời gian</HeaderCell>
+                    </Row>
+                    <Tbody>
+                        {loading && <Loader><FaReact size="4rem"/></Loader>}
+                        {data.map(line => 
+                            <Row className="cell-row" key={line.time}>
+                                <Cell flex={2}>{moment(line.time).format("YYYY-MM-DD hh:mm")}</Cell>
+                                <Cell flex={1}>{line.humidity}</Cell>
+                                <Cell flex={1}>{line.duration}</Cell>
+                            </Row>    
+                        )}
+                    </Tbody>
+                </Table>                             
             </Body>
         </Container>
     )

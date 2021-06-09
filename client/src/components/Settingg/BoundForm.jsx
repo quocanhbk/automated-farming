@@ -12,7 +12,6 @@ const Container = styled.div`
     flex-direction: column;
     gap: 1rem;
     width: 80%;
-    overflow: hidden;
 `
 const MainContent = styled.div`
     display: flex;  
@@ -72,38 +71,28 @@ const Notify = styled.div`
     border-radius: 0.5rem;
 `
 const BoundForm = () => {
-    const originalValue = useRef({top: null, bottom: null})
-    const [top, setTop] = useState(100);
-    const [bottom, setBottom] = useState(0);
-    const [lastFocus, setLastFocus] = useState(null)
+    const originalValue = useRef()
+    const [setting, setSetting] = useState(0);
     const [loading, setLoading] = useState(true)
     const [notify, setNotify] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
-            let data = (await axios.get('/api/humid')).data
-            originalValue.current = {top: parseInt(data.top), bottom: parseInt(data.bottom)}
-            setTop(originalValue.current.top)
-            setBottom(originalValue.current.bottom)
+            let data = (await axios.get('/api/setting')).data
+            originalValue.current = parseInt(data.setting)
+            setSetting(originalValue.current)
             setLoading(false)
         }
         fetchData()
     }, [])
 
-
-    useEffect(() => {
-        if (top <= bottom && lastFocus === "top") setBottom(top - 1)
-        else if (bottom >= top && lastFocus === "bottom") setTop(bottom + 1)
-    }, [top, bottom, lastFocus])
-
     const postData = async () => {
-        await axios.post('/api/humid', {top, bottom})
-        originalValue.current = {top, bottom}
+        await axios.post('/api/setting', {setting})
+        originalValue.current = setting
         setNotify(true)
     }
     const reset = () => {        
-        setTop(originalValue.current.top)
-        setBottom(originalValue.current.bottom)
+        setSetting(originalValue.current)
     }
     return (
         <Container >
@@ -111,21 +100,17 @@ const BoundForm = () => {
                 {loading && <Loader><FaReact size="4rem"/></Loader>}
                 <LabelWrapper>Ngưỡng trên</LabelWrapper>
                 <ElementWrapper>
-                    <Slider fullWidth value={top} onMouseDown={() => setLastFocus("top")} onChange={newValue => setTop(newValue < 1 ? 1 : newValue)}/>
-                </ElementWrapper>
-                <LabelWrapper>Ngưỡng dưới</LabelWrapper>
-                <ElementWrapper>
-                    <Slider fullWidth value={bottom} onMouseDown={() => setLastFocus("bottom")} onChange={newValue => setBottom(newValue > 99 ? 99 : newValue)}/>
+                    <Slider fullWidth value={setting} onChange={newValue => setSetting(newValue)}/>
                 </ElementWrapper>
             </MainContent>
             <ButtonWrapper>
-                <Button onClick={postData} disabled={originalValue.current.top === top && originalValue.current.bottom === bottom}>Lưu</Button>
-                <Button onClick={reset} disabled={originalValue.current.top === top && originalValue.current.bottom === bottom}>Hủy</Button>
+                <Button onClick={postData} disabled={originalValue.current === setting}>Lưu</Button>
+                <Button onClick={reset} disabled={originalValue.current === setting}>Hủy</Button>
             </ButtonWrapper>
             <Snackbar visible={notify} onClose={() => setNotify(false)} timeOut={1500}>
                 <Notify>
                     <BsCheckCircle size="1.2rem"/>
-                    <p>Cập nhật ngưỡng thành công !</p>
+                    <p>Điều chỉnh công suất thành công !</p>
                 </Notify>
             </Snackbar>
         </Container>
