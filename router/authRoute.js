@@ -28,7 +28,6 @@ router.get('/', (req, res) => {
 })
 
 router.post('/login', (req, res) => {
-    console.log("Somebody logged in");
     let {username, password} = req.body
     dbConn.query(`SELECT * FROM users WHERE username = "${username}"`, (err, result) => {
         if (result.length === 0) {

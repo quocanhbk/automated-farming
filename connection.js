@@ -3,8 +3,8 @@ const  mysql = require('mysql');
 const feedList = require('./feedList')
 
 const dbConn = mysql.createConnection({
-  host: "mysql-30814-0.cloudclusters.net",
-  port: 30848,
+  host: "mysql-34115-0.cloudclusters.net",
+  port: 34115,
   user: "staff",
   password: "password",
   database: "farm"
