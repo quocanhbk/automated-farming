@@ -35,7 +35,7 @@ router.post('/',(req,res) =>{
     })
 })   
         
-router.get('/', (req, res) => { 
+router.get('/', (req, res) => {
     let query = `SELECT sstatus FROM mainsystem WHERE id = 101`;
     dbConn.query(query, (err, result) => {
         if (err) res.json({error: err})

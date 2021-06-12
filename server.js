@@ -6,11 +6,18 @@ const cookieParser = require('cookie-parser')
 const feedList = require('./feedList')
 const { ToadScheduler, SimpleIntervalJob, Task } = require('toad-scheduler')
 require('dotenv').config()
-
 let {adafruit} = require('./connection')
 let {requireAuth} = require('./middlewares/authMiddleware')
 let {settingRoute, modeRoute, powerRoute, historyRoute, authRoute, humidRoute, messageRoute, wateringRoute} = require('./router')
-let {handleIotButton, checkHumidScheduler, handleSensorInput, startManualWatering, stopManualWatering} = require('./iotFunctions')
+let {handleIotButton, checkHumidScheduler, handleSensorInput, startManualWatering, stopManualWatering} = require('./iotFunctions');
+const { getSystemMode } = require('./systemMode');
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/build'))
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+    })
+}
 
 app.use(express.json())
 app.use(cookieParser())
@@ -22,9 +29,6 @@ app.use('/api/humid', requireAuth, humidRoute)
 app.use('/api/message', messageRoute)
 app.use('/api/history', requireAuth, historyRoute)
 app.use('/api/watering', requireAuth, wateringRoute)
-app.get('/', (req, res) => {
-    res.send("Oke")
-})
 
 // Handle input from IOT
 adafruit.on('message', (topic, message) => {
@@ -42,12 +46,12 @@ const scheduler = new ToadScheduler()
 const task = new Task('simple', () => {
     checkHumidScheduler()
 })
-const job = new SimpleIntervalJob({minutes: 40}, task)
+const job = new SimpleIntervalJob({minutes: 60}, task)
 scheduler.addSimpleIntervalJob(job)
 
-// setTimeout(() => {
-//     checkHumidScheduler()
-// }, 2000)
+setTimeout(() => {
+    checkHumidScheduler()
+}, 2000)
 
 const server = http.createServer(app)
 const io = new Server(server)
@@ -55,10 +59,20 @@ const io = new Server(server)
 io.on("connection", socket => {
     console.log('[SYSTEM]     New User Connected')
     socket.on("watering", (message) => {
-        if (message === "start")
-            startManualWatering()
-        else if (message === "stop")
+        if (message === "start") {
+            let systemMode = getSystemMode()
+            if (systemMode === "IDLE") {
+                socket.emit("watering", "ok")
+                startManualWatering()
+            }
+            else {
+                socket.emit("watering", "rejected")
+            }
+        }   
+        else if (message === "stop") {
             stopManualWatering()
+        }
+            
     })
 })
 server.listen(5000, () => console.log("[SERVER]     Running"))

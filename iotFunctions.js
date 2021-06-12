@@ -136,12 +136,10 @@ const handleSensorInput = async (currentHumidity) => {
 
 const startManualWatering = async () => {
     // if watering mode is auto, switch to manual
-    let query = `SELECT smode FROM mainsystem WHERE id = 101`;
-    let {smode} = (await queryHelper(dbConn, query))[0]
-    if (smode === 1) {
-        let query = "UPDATE mainsystem SET smode = 0 WHERE id = 101"
-        queryHelper(dbConn, query)
-    }
+    // let query = `SELECT smode FROM mainsystem WHERE id = 101`;
+    // let {smode} = (await queryHelper(dbConn, query))[0]
+    let query = "UPDATE mainsystem SET smode = 0 WHERE id = 101"
+    queryHelper(dbConn, query)
 
     const humidValue = parseInt(JSON.parse((await axios.get('https://io.adafruit.com/api/v2/quocanhbk17/feeds/humid-sensor/data/last', {
         headers: {
@@ -149,11 +147,11 @@ const startManualWatering = async () => {
         }
     })).data.value).data)
     setHumidity(humidValue)
-    toggleSystemMode()
+    toggleSystemMode("START")
 }
 
 const stopManualWatering = async () => {
-    toggleSystemMode()
+    toggleSystemMode("STOP")
 }
 module.exports = {
     handleIotButton, 

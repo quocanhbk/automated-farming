@@ -51,7 +51,7 @@ const HumidChart = () => {
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true)
-            let messages = (await axios.get('/api/message/10')).data.message
+            let messages = (await axios.get('/api/message/10')).data.message.reverse()
             let labels = messages.map(message => moment(message.time).format("MM/DD hh:mm"))
             let datas = messages.map(message => message.humidity)
             setData({

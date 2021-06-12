@@ -26,7 +26,7 @@ const Body = styled.div`
     gap: 1rem;
 `
 const Text = styled.p`
-    color: ${props => props.mode ? props.theme.color.fill.success : props.theme.color.fill.danger};
+    color: ${props => props.power ? props.theme.color.fill.success : props.theme.color.fill.danger};
     font-weight: 600;
     padding: 0.5rem;
 `
@@ -71,18 +71,18 @@ const Mode = () => {
         }
     }
 
-    const getData = async () => {        
-        try {
-            const res = await axios.get("/api/power");
-            setPower(res.data.power === "on")
-        } catch (error) {
-            setPower(false)
-        }
-        setTimeout(() => setLoading(false), 400) 
-    }
     useEffect(() => {
+        const getData = async () => {        
+            try {
+                const res = await axios.get("/api/power");
+                setPower(res.data.power === "on")
+            } catch (error) {
+                setPower(false)
+            }
+            setTimeout(() => setLoading(false), 400) 
+        }
         getData();
-    }, []);
+    }, [setPower]);
     
     return (
         <Container>
@@ -90,7 +90,7 @@ const Mode = () => {
                 <Body>
                     <Wrapper>
                         {loading && <Loader><FaReact size="4rem"/></Loader>}
-                        <Text mode={power}>
+                        <Text power={power}>
                             Hệ thống đang 
                             {power ? " bật" : " tắt"}
                         </Text>

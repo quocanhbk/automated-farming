@@ -14,6 +14,7 @@ const Container = styled.div`
     background: ${props => props.theme.color.fill.primary};
     background: ${props => "linear-gradient(to right," + props.theme.color.fill.primary + ", " + getFader(props.theme.color.fill.primary, 0.8) + ")"};
     gap: 0.5rem;
+    z-index: 5;
     color: ${props => props.theme.color.background.primary};
     & h3 {
         font-weight: 500;
@@ -31,7 +32,7 @@ const out = keyframes`
     to {transform: translate(-50%, calc(100% - 1rem)); opacity: 0;}
 `
 const HeaderPopup = styled.div`
-    width: calc(100% - 1rem);
+    width: calc(100% - 2rem);
     position: absolute;
     bottom: 0;
     left: 50%;

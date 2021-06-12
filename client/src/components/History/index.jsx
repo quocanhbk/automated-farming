@@ -38,7 +38,7 @@ const HeaderCell = styled.div`
     flex: ${props => props.flex};
     text-align: center;
 `
-const Tbody = styled.tbody`
+const Tbody = styled.div`
     flex: 1;
     overflow: overlay;
     scroll-behavior: smooth;
@@ -55,7 +55,7 @@ const Row = styled.div`
         background: ${props => getFader(props.theme.color.border.primary, 0.2)};
     }
 `
-const Cell = styled.td`
+const Cell = styled.div`
     text-align: center;
     padding: 0.5rem 0;
     flex: ${props => props.flex};
@@ -72,7 +72,7 @@ const History = () => {
             setLoading(false)
         }
         fetchData()
-    })
+    }, [])
 
     return (
         <Container>

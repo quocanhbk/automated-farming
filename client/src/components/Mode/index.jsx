@@ -25,7 +25,7 @@ const Body = styled.div`
     gap: 1rem;
 `
 const Text = styled.p`
-    color: ${props => props.mode ? props.theme.color.fill.success : props.theme.color.fill.danger};
+    color: ${props => props.wateringMode ? props.theme.color.fill.success : props.theme.color.fill.danger};
     font-weight: 600;
     padding: 0.5rem;
 `
@@ -87,7 +87,7 @@ const Mode = () => {
                 <Body>
                     <Wrapper>
                         {loading && <Loader><FaReact size="4rem"/></Loader>}
-                        <Text mode={checked}>Chế độ tưới: <span>{checked ? "Tự động" : "Thủ công"}</span></Text>
+                        <Text wateringMode={checked}>Chế độ tưới: <span>{checked ? "Tự động" : "Thủ công"}</span></Text>
                         <ToggleContainer>
                             <BigToggle value={checked} onChange={() => postData()}/>
                         </ToggleContainer>

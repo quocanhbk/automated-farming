@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "server": "nodemon server",
-    "client": "npm start --prefix ./client",
+    "client": "npm start --prefix client",
+    "client-install": "npm install --prefix client",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\" "
   },
   "keywords": [],
@@ -15,20 +17,13 @@
     "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
-    "date-format-parse": "^0.2.6",
-    "dateformat": "^4.5.1",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
     "mqtt": "^4.2.6",
     "mysql": "^2.18.1",
-    "node-fetch": "^2.6.1",
-    "node-schedule": "^2.0.0",
-    "react-table-6": "^6.11.0",
-    "sequelize": "^6.6.2",
     "socket.io": "^4.1.2",
-    "socket.io-emitter": "^3.2.0",
     "toad-scheduler": "^1.3.0"
   },
   "devDependencies": {
