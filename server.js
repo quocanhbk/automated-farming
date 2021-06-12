@@ -14,6 +14,8 @@ let {settingRoute, modeRoute, powerRoute, historyRoute, authRoute, humidRoute, m
 let {handleIotButton, checkHumidScheduler, handleSensorInput, startManualWatering, stopManualWatering} = require('./iotFunctions');
 const { getSystemMode } = require('./systemMode');
 
+const port = process.env.PORT || 5000
+
 app.use(express.json())
 app.use(cookieParser())
 app.use('/api/auth', authRoute)
@@ -73,4 +75,5 @@ io.on("connection", socket => {
             
     })
 })
-server.listen(5000, () => console.log("[SERVER]     Running"))
+
+server.listen(port, () => console.log("[SERVER]     Running"))
