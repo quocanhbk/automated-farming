@@ -4,6 +4,7 @@ const {Server} = require('socket.io')
 const app = express();
 const cookieParser = require('cookie-parser')
 const feedList = require('./feedList')
+const path = require('path')
 const { ToadScheduler, SimpleIntervalJob, Task } = require('toad-scheduler')
 require('dotenv').config()
 let {adafruit} = require('./connection')
@@ -11,13 +12,6 @@ let {requireAuth} = require('./middlewares/authMiddleware')
 let {settingRoute, modeRoute, powerRoute, historyRoute, authRoute, humidRoute, messageRoute, wateringRoute} = require('./router')
 let {handleIotButton, checkHumidScheduler, handleSensorInput, startManualWatering, stopManualWatering} = require('./iotFunctions');
 const { getSystemMode } = require('./systemMode');
-
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('client/build'))
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
-    })
-}
 
 app.use(express.json())
 app.use(cookieParser())
@@ -29,6 +23,13 @@ app.use('/api/humid', requireAuth, humidRoute)
 app.use('/api/message', messageRoute)
 app.use('/api/history', requireAuth, historyRoute)
 app.use('/api/watering', requireAuth, wateringRoute)
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/build'))
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+    })
+}
 
 // Handle input from IOT
 adafruit.on('message', (topic, message) => {
