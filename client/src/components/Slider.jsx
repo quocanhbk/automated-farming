@@ -101,7 +101,7 @@ const SliderValue= styled.span`
 const Slider = ({step, min, max, value, onChange, onMouseDown}) =>{
 
     return(
-        <StyleSlider onMouseDown={onMouseDown}>
+        <StyleSlider onMouseDown={onMouseDown} onTouchStart={onMouseDown}>
             <Container>
                 <Left style={{width: parseInt((value - min)/(max-min)*100).toString() + "%"}}>
                     <InLeft/>
