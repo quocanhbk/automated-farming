@@ -49,10 +49,6 @@ const task = new Task('simple', () => {
 const job = new SimpleIntervalJob({minutes: 60}, task)
 scheduler.addSimpleIntervalJob(job)
 
-setTimeout(() => {
-    checkHumidScheduler()
-}, 2000)
-
 const server = http.createServer(app)
 const io = new Server(server)
 
