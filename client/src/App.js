@@ -4,9 +4,6 @@ import MainPage from "./components/MainPage"
 import theme from "./utils/theme"
 import { StoreProvider, useStoreActions, useStoreState } from "easy-peasy"
 import store from "./store"
-import { QueryClient, QueryClientProvider } from "react-query"
-
-const queryClient = new QueryClient()
 
 const StyledApp = styled.div`
     background: ${(props) => props.theme.color.background.secondary};
@@ -27,13 +24,11 @@ const Container = () => {
         getPower()
     })
     return (
-        <QueryClientProvider client={queryClient}>
-            <ThemeProvider theme={isDark ? theme.dark : theme.light}>
-                <StyledApp>
-                    <MainPage />
-                </StyledApp>
-            </ThemeProvider>
-        </QueryClientProvider>
+        <ThemeProvider theme={isDark ? theme.dark : theme.light}>
+            <StyledApp>
+                <MainPage />
+            </StyledApp>
+        </ThemeProvider>
     )
 }
 
